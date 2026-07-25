@@ -5,40 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FindIt — Campus Lost & Found</title>
 
-    <!-- Page Favicon -->
     <link rel="icon" type="image/jpeg" href="images/findit.jpeg">
-
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         /* ==========================================================================
-           GLOBAL VARIABLES & LIGHT/DARK THEME DEFINITIONS
+           THEME TOKENS
            ========================================================================== */
         :root {
-            --primary-purple: #5b46f6;
-            --primary-hover: #4a35e0;
-            --bg-body: #f8fafc;
-            --bg-nav: #ffffff;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-glow: rgba(79, 70, 229, 0.35);
+            --accent: #06b6d4;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-body: #f6f7fb;
+            --bg-nav: rgba(255, 255, 255, 0.72);
             --bg-card: #ffffff;
+            --bg-elevated: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
+            --text-soft: #94a3b8;
             --border-color: #e2e8f0;
-            --footer-bg: #090d16;
+            --border-soft: #eef2f7;
+            --footer-bg: #0a0f1e;
             --footer-text: #94a3b8;
-            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --card-hover-shadow: 0 12px 28px rgba(91, 70, 246, 0.15);
+            --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+            --card-hover-shadow: 0 4px 8px rgba(79, 70, 229, 0.08), 0 24px 48px rgba(79, 70, 229, 0.18);
+            --dot-color: rgba(79, 70, 229, 0.10);
+            --grid-line: rgba(15, 23, 42, 0.04);
         }
 
         [data-theme="dark"] {
-            --bg-body: #0f172a;
-            --bg-nav: #1e293b;
-            --bg-card: #1e293b;
+            --bg-body: #0a0f1e;
+            --bg-nav: rgba(15, 23, 42, 0.72);
+            --bg-card: #131a2e;
+            --bg-elevated: #1a2238;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --border-color: #334155;
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            --card-hover-shadow: 0 12px 30px rgba(91, 70, 246, 0.3);
+            --text-soft: #64748b;
+            --border-color: #243049;
+            --border-soft: #1e293f;
+            --card-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
+            --card-hover-shadow: 0 4px 8px rgba(79, 70, 229, 0.15), 0 24px 56px rgba(79, 70, 229, 0.28);
+            --dot-color: rgba(129, 140, 248, 0.14);
+            --grid-line: rgba(255, 255, 255, 0.04);
         }
 
         * {
@@ -46,8 +61,9 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: var(--bg-body);
@@ -56,6 +72,35 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* ==========================================================================
+           AMBIENT BACKGROUND — DOT GRID + GLOW
+           ========================================================================== */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-image:
+                radial-gradient(circle at center, var(--dot-color) 1px, transparent 1.5px);
+            background-size: 28px 28px;
+            background-position: 0 0;
+            pointer-events: none;
+        }
+        .ambient-glow {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(600px circle at 12% 8%, rgba(79, 70, 229, 0.10), transparent 60%),
+                radial-gradient(700px circle at 88% 18%, rgba(6, 182, 212, 0.08), transparent 60%);
+        }
+        [data-theme="dark"] .ambient-glow {
+            background:
+                radial-gradient(700px circle at 12% 8%, rgba(79, 70, 229, 0.22), transparent 60%),
+                radial-gradient(800px circle at 88% 18%, rgba(6, 182, 212, 0.14), transparent 60%);
         }
 
         /* ==========================================================================
@@ -65,13 +110,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 8%;
+            padding: 14px 8%;
             background-color: var(--bg-nav);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
         .navbar-brand {
@@ -79,68 +125,61 @@
             align-items: center;
             gap: 12px;
             text-decoration: none;
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 800;
-            color: var(--primary-purple);
+            color: var(--primary);
+            letter-spacing: -0.02em;
         }
 
         .navbar-brand img {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             object-fit: contain;
             background-color: #ffffff;
             padding: 2px;
             border: 1px solid var(--border-color);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
-        .navbar-brand:hover {
-            transform: scale(1.03);
-        }
+        .navbar-brand:hover img { transform: rotate(-8deg) scale(1.08); }
 
         .navbar-nav {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 28px;
             list-style: none;
         }
-
         .navbar-nav a {
             text-decoration: none;
             color: var(--text-muted);
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             position: relative;
+            transition: color 0.2s ease;
         }
-
         .navbar-nav a::after {
             content: '';
             position: absolute;
             width: 0%;
             height: 2px;
-            bottom: -4px;
+            bottom: -6px;
             left: 0;
-            background-color: var(--primary-purple);
+            background-color: var(--primary);
+            border-radius: 2px;
             transition: width 0.3s ease;
         }
-
-        .navbar-nav a:hover {
-            color: var(--primary-purple);
-        }
-
-        .navbar-nav a:hover::after {
-            width: 100%;
-        }
+        .navbar-nav a:hover { color: var(--primary); }
+        .navbar-nav a:hover::after { width: 100%; }
 
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
         }
 
         .btn {
-            padding: 10px 22px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 0.9rem;
             text-decoration: none;
@@ -148,266 +187,633 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
         }
-
         .btn-outline {
             border: 1px solid var(--border-color);
-            color: var(--primary-purple);
+            color: var(--primary);
             background: transparent;
         }
-
         .btn-outline:hover {
-            border-color: var(--primary-purple);
-            background-color: rgba(91, 70, 246, 0.08);
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.08);
             transform: translateY(-2px);
         }
-
         .btn-primary {
-            background-color: var(--primary-purple);
+            background-color: var(--primary);
             color: #ffffff;
-            border: none;
-            box-shadow: 0 4px 12px rgba(91, 70, 246, 0.3);
+            box-shadow: 0 6px 16px var(--primary-glow);
         }
-
         .btn-primary:hover {
             background-color: var(--primary-hover);
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(91, 70, 246, 0.4);
+            box-shadow: 0 10px 24px var(--primary-glow);
         }
+        .btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            background: rgba(255, 255, 255, 0.5);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        @keyframes ripple { to { transform: scale(4); opacity: 0; } }
 
         .btn-theme-toggle {
             background: none;
-            border: none;
-            font-size: 1.3rem;
+            border: 1px solid var(--border-color);
+            font-size: 1.1rem;
             cursor: pointer;
             color: var(--text-main);
-            padding: 8px;
-            border-radius: 50%;
+            padding: 9px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 40px;
+            height: 40px;
+            transition: all 0.3s ease;
         }
-
         .btn-theme-toggle:hover {
-            background-color: var(--border-color);
-            transform: rotate(15deg);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: rotate(20deg) scale(1.05);
         }
 
         /* ==========================================================================
-           HERO SECTION & TYPEWRITER ANIMATION
+           HERO
            ========================================================================== */
-        .hero-container {
-            display: flex;
+        .hero {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
             align-items: center;
-            justify-content: space-between;
-            padding: 60px 8% 40px;
-            max-width: 1300px;
+            gap: 60px;
+            padding: 70px 8% 50px;
+            max-width: 1320px;
             margin: 0 auto;
             width: 100%;
         }
 
-        .hero-content {
-            max-width: 580px;
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(79, 70, 229, 0.10);
+            color: var(--primary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 22px;
+            border: 1px solid rgba(79, 70, 229, 0.18);
+        }
+        .hero-eyebrow .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 0 0 var(--primary-glow);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.5); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
         }
 
         .hero-title {
-            font-size: 2.8rem;
-            font-weight: 800;
-            line-height: 1.25;
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
             color: var(--text-main);
-            min-height: 110px;
         }
-
+        .hero-title .accent {
+            background: linear-gradient(120deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         .typewriter-text {
-            color: var(--primary-purple);
-            border-right: 3px solid var(--primary-purple);
+            color: var(--primary);
+            border-right: 3px solid var(--primary);
             animation: blink 0.75s step-end infinite;
         }
-
         @keyframes blink {
-            from, to { border-color: transparent }
-            50% { border-color: var(--primary-purple); }
+            from, to { border-color: transparent; }
+            50% { border-color: var(--primary); }
         }
 
         .hero-subtitle {
-            margin: 20px 0 30px;
+            margin: 22px 0 32px;
             color: var(--text-muted);
-            font-size: 1.05rem;
+            font-size: 1.08rem;
             line-height: 1.6;
+            max-width: 520px;
         }
 
         .hero-btns {
             display: flex;
-            gap: 15px;
+            gap: 14px;
+            flex-wrap: wrap;
         }
 
-        .hero-image-wrapper {
+        /* Live dashboard preview */
+        .dashboard-preview {
+            position: relative;
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 12px;
-            box-shadow: var(--card-shadow);
-            max-width: 480px;
-            width: 100%;
             border: 1px solid var(--border-color);
-        }
-
-        .hero-image-wrapper:hover {
-            transform: translateY(-5px);
+            border-radius: 22px;
+            padding: 18px;
             box-shadow: var(--card-hover-shadow);
+            overflow: hidden;
+        }
+        .dashboard-preview::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.06), rgba(6, 182, 212, 0.04));
+            pointer-events: none;
+        }
+        .dp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .dp-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+        .dp-title .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5);
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+        .dp-chips {
+            display: flex;
+            gap: 6px;
+        }
+        .dp-chip {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--border-soft);
+            color: var(--text-muted);
+        }
+        .dp-chip.active {
+            background: rgba(79, 70, 229, 0.12);
+            color: var(--primary);
         }
 
-        .hero-image-wrapper img {
-            width: 100%;
-            height: auto;
-            border-radius: 14px;
-            display: block;
-            object-fit: contain;
+        .dp-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .dp-stat {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+        .dp-stat .v {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .dp-stat .l {
+            font-size: 0.66rem;
+            color: var(--text-soft);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 600;
+        }
+
+        .dp-feed {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 220px;
+            overflow: hidden;
+        }
+        .dp-feed-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-soft);
+            border-radius: 10px;
+            font-size: 0.82rem;
+            animation: slideInFeed 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideInFeed {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .dp-feed-item .ico {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .dp-feed-item .ico.lost { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
+        .dp-feed-item .ico.found { background: rgba(22, 163, 74, 0.12); color: var(--success); }
+        .dp-feed-item .meta { flex: 1; min-width: 0; }
+        .dp-feed-item .meta .t {
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dp-feed-item .meta .s {
+            font-size: 0.7rem;
+            color: var(--text-soft);
+        }
+        .dp-feed-item .time {
+            font-size: 0.68rem;
+            color: var(--text-soft);
+            flex-shrink: 0;
         }
 
         /* ==========================================================================
-           DYNAMIC STATS BAR
+           STATS BAR
            ========================================================================== */
         .stats-container {
             display: flex;
             justify-content: center;
-            gap: 60px;
-            margin: 30px 0 60px;
+            gap: 24px;
+            margin: 20px 0 60px;
             padding: 0 8%;
+            flex-wrap: wrap;
         }
-
         .stat-box {
             text-align: center;
-            padding: 20px 30px;
+            padding: 24px 32px;
             border-radius: 16px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             min-width: 200px;
             box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
         .stat-box:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-purple);
+            transform: translateY(-6px);
+            border-color: transparent;
+            box-shadow: var(--card-hover-shadow);
         }
-
+        .stat-box:hover::before { transform: scaleX(1); }
         .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-purple);
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--primary);
             margin-bottom: 4px;
+            letter-spacing: -0.02em;
         }
-
         .stat-label {
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.78rem;
+            font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.06em;
         }
 
         /* ==========================================================================
-           RECENT ACTIVITY & DYNAMIC GRID
+           RECENT ACTIVITY
            ========================================================================== */
         .recent-section {
-            max-width: 1300px;
+            max-width: 1320px;
             margin: 0 auto;
-            padding: 0 8% 80px;
+            padding: 0 8% 100px;
             width: 100%;
         }
-
         .recent-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
-
         .recent-header h2 {
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
             color: var(--text-main);
             margin-bottom: 8px;
         }
-
         .recent-header p {
             color: var(--text-muted);
-            font-size: 1.0rem;
+            font-size: 1rem;
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            padding: 9px 18px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .filter-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .filter-tab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 6px 14px var(--primary-glow);
+        }
+        .filter-tab .count {
+            background: rgba(255,255,255,0.2);
+            padding: 1px 7px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+        }
+        .filter-tab:not(.active) .count {
+            background: var(--border-soft);
+            color: var(--text-soft);
         }
 
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 25px;
+            gap: 22px;
         }
 
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 24px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 290px;
+            min-height: 270px;
             box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.4s ease,
+                        border-color 0.3s ease,
+                        opacity 0.5s ease;
         }
-
+        .card.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%), rgba(79, 70, 229, 0.08), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
         .card:hover {
             transform: translateY(-8px);
             box-shadow: var(--card-hover-shadow);
-            border-color: var(--primary-purple);
+            border-color: var(--primary);
         }
+        .card:hover::after { opacity: 1; }
 
-        .card-icon {
-            font-size: 2.2rem;
-            margin-bottom: 15px;
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
         }
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+        }
+        .card-icon.lost { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
+        .card-icon.found { background: rgba(22, 163, 74, 0.12); color: var(--success); }
 
         .badge {
             display: inline-block;
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 999px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
+            letter-spacing: 0.05em;
         }
-
-        .badge-found {
-            background-color: #dcfce7;
-            color: #15803d;
-        }
-
-        .badge-lost {
-            background-color: #fee2e2;
-            color: #b91c1c;
-        }
+        .badge-found { background-color: rgba(22, 163, 74, 0.14); color: var(--success); }
+        .badge-lost { background-color: rgba(239, 68, 68, 0.14); color: var(--danger); }
 
         .card-title {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
         }
-
         .card-desc {
-            font-size: 0.88rem;
+            font-size: 0.86rem;
             color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 20px;
+            line-height: 1.55;
+            margin-bottom: 18px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
-
         .card-footer {
-            border-top: 1px solid var(--border-color);
-            padding-top: 14px;
+            border-top: 1px solid var(--border-soft);
+            padding-top: 12px;
             display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-size: 0.78rem;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.76rem;
+            color: var(--text-soft);
+        }
+        .card-footer span { display: inline-flex; align-items: center; gap: 5px; }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
             color: var(--text-muted);
         }
+        .empty-state i { font-size: 2.5rem; color: var(--text-soft); margin-bottom: 14px; }
 
         /* ==========================================================================
-           DARK FOOTER & CENTERED COPYRIGHT
+           FLOATING ACTION BUTTON
+           ========================================================================== */
+        .fab {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .fab-main, .fab-sub {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.88rem;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .fab-main {
+            background: var(--primary);
+            color: #fff;
+        }
+        .fab-main:hover {
+            transform: scale(1.06);
+            box-shadow: 0 14px 36px var(--primary-glow);
+        }
+        .fab-sub {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            transform: translateX(120%);
+            opacity: 0;
+        }
+        .fab.open .fab-sub {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .fab-sub:nth-child(1) { transition-delay: 0.05s; }
+        .fab-sub:nth-child(2) { transition-delay: 0.1s; }
+        .fab-sub:hover { transform: translateX(0) scale(1.04); border-color: var(--primary); color: var(--primary); }
+
+        /* ==========================================================================
+           TOAST NOTIFICATIONS
+           ========================================================================== */
+        .toast-stack {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 340px;
+        }
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+            animation: toastIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            position: relative;
+        }
+        .toast.out { animation: toastOut 0.4s forwards; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(120%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toastOut {
+            to { opacity: 0; transform: translateX(120%); }
+        }
+        .toast .ico {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.95rem;
+        }
+        .toast .ico.found { background: rgba(22, 163, 74, 0.14); color: var(--success); }
+        .toast .ico.lost { background: rgba(239, 68, 68, 0.14); color: var(--danger); }
+        .toast .ico.info { background: rgba(79, 70, 229, 0.14); color: var(--primary); }
+        .toast .body { flex: 1; min-width: 0; }
+        .toast .body .t { font-weight: 700; font-size: 0.85rem; color: var(--text-main); }
+        .toast .body .s { font-size: 0.74rem; color: var(--text-muted); margin-top: 2px; }
+        .toast .progress {
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 3px;
+            background: var(--primary);
+            width: 100%;
+            transform-origin: left;
+            animation: shrink 4.5s linear forwards;
+        }
+        @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+        /* ==========================================================================
+           FOOTER
            ========================================================================== */
         .site-footer {
             background-color: var(--footer-bg);
@@ -415,24 +821,19 @@
             padding: 60px 8% 30px;
             margin-top: auto;
         }
-
         .footer-main {
             display: flex;
             justify-content: space-between;
-            max-width: 1300px;
+            max-width: 1320px;
             margin: 0 auto;
             flex-wrap: wrap;
             gap: 40px;
             padding-bottom: 40px;
             border-bottom: 1px solid #1e293b;
         }
-
-        .footer-left {
-            max-width: 320px;
-        }
-
+        .footer-left { max-width: 320px; }
         .footer-logo {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             color: #ffffff;
             text-decoration: none;
@@ -441,59 +842,22 @@
             gap: 12px;
             margin-bottom: 15px;
         }
-
         .footer-logo img {
-            width: 42px;
-            height: 42px;
+            width: 40px; height: 40px;
             border-radius: 8px;
             object-fit: contain;
             background-color: #ffffff;
             padding: 2px;
         }
-
-        .footer-logo:hover {
-            transform: scale(1.03);
-        }
-
-        .footer-tagline {
-            color: var(--footer-text);
-            font-size: 0.88rem;
-            line-height: 1.6;
-        }
-
-        .footer-columns {
-            display: flex;
-            gap: 70px;
-        }
-
-        .footer-col h4 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 18px;
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 12px;
-        }
-
-        .footer-col ul li a {
-            color: var(--footer-text);
-            text-decoration: none;
-            font-size: 0.88rem;
-        }
-
-        .footer-col ul li a:hover {
-            color: #ffffff;
-            padding-left: 5px;
-        }
-
+        .footer-tagline { color: var(--footer-text); font-size: 0.88rem; line-height: 1.6; }
+        .footer-columns { display: flex; gap: 70px; flex-wrap: wrap; }
+        .footer-col h4 { font-size: 0.92rem; font-weight: 700; color: #fff; margin-bottom: 18px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: var(--footer-text); text-decoration: none; font-size: 0.86rem; transition: color 0.2s, padding-left 0.2s; }
+        .footer-col ul li a:hover { color: #fff; padding-left: 5px; }
         .footer-bottom {
-            max-width: 1300px;
+            max-width: 1320px;
             margin: 30px auto 0;
             display: flex;
             align-items: center;
@@ -501,66 +865,49 @@
             position: relative;
             padding: 10px 0;
         }
-
-        .copyright-text {
-            font-size: 0.85rem;
-            color: var(--footer-text);
-            text-align: center;
-        }
-
-        .footer-socials {
-            display: flex;
-            gap: 15px;
-            position: absolute;
-            right: 0;
-        }
-
+        .copyright-text { font-size: 0.84rem; color: var(--footer-text); text-align: center; }
+        .footer-socials { display: flex; gap: 14px; position: absolute; right: 0; }
         .footer-socials a {
             color: var(--footer-text);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             text-decoration: none;
-            width: 38px;
-            height: 38px;
+            width: 38px; height: 38px;
             border-radius: 50%;
             background: #1e293b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.25s ease;
         }
+        .footer-socials a:hover { color: #fff; background: var(--primary); transform: translateY(-3px); }
 
-        .footer-socials a:hover {
-            color: #ffffff;
-            background: var(--primary-purple);
-            transform: translateY(-3px);
+        /* ==========================================================================
+           SCROLL REVEAL HELPER
+           ========================================================================== */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .reveal-up.in { opacity: 1; transform: translateY(0); }
 
-        @media (max-width: 900px) {
-            .hero-container {
-                flex-direction: column;
-                text-align: center;
-                gap: 40px;
-            }
-            .hero-btns {
-                justify-content: center;
-            }
-            .stats-container {
-                flex-direction: column;
-                gap: 20px;
-            }
-            .footer-columns {
-                gap: 35px;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .footer-socials {
-                position: static;
-            }
+        /* ==========================================================================
+           RESPONSIVE
+           ========================================================================== */
+        @media (max-width: 960px) {
+            .hero { grid-template-columns: 1fr; gap: 40px; padding-top: 40px; }
+            .navbar-nav { display: none; }
+            .stats-container { flex-direction: column; gap: 16px; }
+            .footer-columns { gap: 35px; }
+            .footer-bottom { flex-direction: column; gap: 15px; }
+            .footer-socials { position: static; }
+            .toast-stack { left: 16px; right: 16px; max-width: none; }
+            .fab { bottom: 20px; right: 16px; }
         }
     </style>
 </head>
 <body>
+
+    <div class="ambient-bg"></div>
+    <div class="ambient-glow"></div>
 
     <!-- ===================== NAVBAR ===================== -->
     <header class="navbar">
@@ -572,69 +919,121 @@
         <ul class="navbar-nav">
             <li><a href="index.html">Home</a></li>
             <li><a href="#recent">Recent Activity</a></li>
+            <li><a href="#how">How It Works</a></li>
         </ul>
 
         <div class="nav-actions" id="navActions">
-            <!-- Theme Toggle Button -->
             <button onclick="toggleTheme()" class="btn-theme-toggle" id="themeToggleBtn" title="Toggle Light/Dark Theme">
                 <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
             </button>
-
             <a href="pages/Login.html" class="btn btn-outline" id="btnLogin">Log In</a>
             <a href="pages/Register.html" class="btn btn-primary" id="btnSignup">Sign Up</a>
         </div>
     </header>
 
-    <!-- ===================== HERO SECTION ===================== -->
-    <section class="hero-container">
+    <!-- ===================== HERO ===================== -->
+    <section class="hero">
         <div class="hero-content">
+            <span class="hero-eyebrow"><span class="pulse-dot"></span> Live campus lost &amp; found network</span>
             <h1 class="hero-title">
-                Lost Something on Campus? <br>
+                Lost something?<br>
+                <span class="accent">FindIt</span> helps you<br>
                 <span id="typewriter" class="typewriter-text"></span>
             </h1>
             <p class="hero-subtitle">
-                The smart, centralized lost-and-found portal for campus students and staff.
+                The smart, centralized lost-and-found portal for campus students and staff. Report, track, and recover items in real time across every department block.
             </p>
-
             <div class="hero-btns">
                 <a href="pages/ReportLost.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Report Lost Item</a>
                 <a href="pages/ReportFound.html" class="btn btn-outline"><i class="fa-solid fa-hand-holding-heart"></i> Found Something?</a>
             </div>
         </div>
 
-        <div class="hero-image-wrapper">
-            <img src="images/findit.jpeg" alt="FindIt - Lost Today. Found Tomorrow.">
+        <!-- Live dashboard preview -->
+        <div class="dashboard-preview">
+            <div class="dp-header">
+                <div class="dp-title"><span class="live-dot"></span> Live Activity</div>
+                <div class="dp-chips">
+                    <span class="dp-chip active">Today</span>
+                    <span class="dp-chip">Week</span>
+                </div>
+            </div>
+            <div class="dp-stats">
+                <div class="dp-stat"><div class="v" id="dpRecovered">0</div><div class="l">Recovered</div></div>
+                <div class="dp-stat"><div class="v" id="dpActive">0</div><div class="l">Active</div></div>
+                <div class="dp-stat"><div class="v" id="dpMatch">100%</div><div class="l">Match</div></div>
+            </div>
+            <div class="dp-feed" id="dpFeed"></div>
         </div>
     </section>
 
-    <!-- ===================== DYNAMIC STATS BAR ===================== -->
+    <!-- ===================== STATS ===================== -->
     <div class="stats-container">
-        <div class="stat-box">
+        <div class="stat-box reveal-up">
             <div class="stat-value" id="statRecovered">0</div>
             <div class="stat-label">Items Recovered</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-box reveal-up">
             <div class="stat-value" id="statMatchRate">100%</div>
             <div class="stat-label">Verified Match</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-box reveal-up">
             <div class="stat-value" id="statActive">0</div>
             <div class="stat-label">Active Reports</div>
         </div>
     </div>
 
-    <!-- ===================== RECENT CAMPUS ACTIVITY ===================== -->
+    <!-- ===================== RECENT ACTIVITY ===================== -->
     <section class="recent-section" id="recent">
-        <div class="recent-header">
+        <div class="recent-header reveal-up">
             <h2>Recent Campus Activity</h2>
             <p>Live listings of reported lost and found items across department blocks</p>
         </div>
 
-        <!-- Dynamic Grid populated via JS -->
+        <div class="filter-tabs reveal-up" id="filterTabs">
+            <button class="filter-tab active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All <span class="count" id="cntAll">0</span></button>
+            <button class="filter-tab" data-filter="lost"><i class="fa-solid fa-magnifying-glass"></i> Lost <span class="count" id="cntLost">0</span></button>
+            <button class="filter-tab" data-filter="found"><i class="fa-solid fa-box-open"></i> Found <span class="count" id="cntFound">0</span></button>
+        </div>
+
         <div class="cards-grid" id="recentItemsGrid"></div>
     </section>
 
-    <!-- ===================== DARK FOOTER ===================== -->
+    <!-- ===================== HOW IT WORKS ===================== -->
+    <section class="recent-section" id="how" style="padding-top:0;">
+        <div class="recent-header reveal-up">
+            <h2>How FindIt Works</h2>
+            <p>Three simple steps from lost to recovered</p>
+        </div>
+        <div class="cards-grid">
+            <div class="card reveal-up" style="cursor:default">
+                <div>
+                    <div class="card-icon lost"><i class="fa-solid fa-bullhorn"></i></div>
+                    <h3 class="card-title">Report</h3>
+                    <p class="card-desc">Lost an item? Post a report with details and last-seen location in under a minute.</p>
+                </div>
+                <div class="card-footer"><span>Step 1</span><span><i class="fa-solid fa-arrow-right"></i></span></div>
+            </div>
+            <div class="card reveal-up" style="cursor:default">
+                <div>
+                    <div class="card-icon found"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                    <h3 class="card-title">Match</h3>
+                    <p class="card-desc">Our system pairs lost reports with found listings and notifies you instantly when there's a hit.</p>
+                </div>
+                <div class="card-footer"><span>Step 2</span><span><i class="fa-solid fa-arrow-right"></i></span></div>
+            </div>
+            <div class="card reveal-up" style="cursor:default">
+                <div>
+                    <div class="card-icon" style="background:rgba(79,70,229,0.12);color:var(--primary)"><i class="fa-solid fa-handshake"></i></div>
+                    <h3 class="card-title">Recover</h3>
+                    <p class="card-desc">Connect with the finder, verify ownership, and get your item back — all on campus.</p>
+                </div>
+                <div class="card-footer"><span>Step 3</span><span><i class="fa-solid fa-check"></i></span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
     <footer class="site-footer">
         <div class="footer-main">
             <div class="footer-left">
@@ -642,20 +1041,17 @@
                     <img src="images/findit.jpeg" alt="FindIt Logo">
                     <span>FindIt</span>
                 </a>
-                <p class="footer-tagline">
-                    Simplifying lost and found management across university campuses.
-                </p>
+                <p class="footer-tagline">Simplifying lost and found management across university campuses.</p>
             </div>
-
             <div class="footer-columns">
                 <div class="footer-col">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="#recent">Recent Activity</a></li>
+                        <li><a href="#how">How It Works</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-col">
                     <h4>Account</h4>
                     <ul>
@@ -663,7 +1059,6 @@
                         <li><a href="pages/Register.html">Register</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-col">
                     <h4>Support</h4>
                     <ul>
@@ -673,7 +1068,6 @@
                 </div>
             </div>
         </div>
-
         <div class="footer-bottom">
             <p class="copyright-text">&copy; 2026 FindIt Campus System. All rights reserved.</p>
             <div class="footer-socials">
@@ -684,162 +1078,345 @@
         </div>
     </footer>
 
+    <!-- ===================== FLOATING ACTION BUTTON ===================== -->
+    <div class="fab" id="fab">
+        <a href="pages/ReportFound.html" class="fab-sub"><i class="fa-solid fa-hand-holding-heart"></i> Report Found</a>
+        <a href="pages/ReportLost.html" class="fab-sub"><i class="fa-solid fa-magnifying-glass"></i> Report Lost</a>
+        <button class="fab-main" id="fabMain" onclick="document.getElementById('fab').classList.toggle('open')">
+            <i class="fa-solid fa-plus" id="fabIcon"></i> Report
+        </button>
+    </div>
+
+    <!-- ===================== TOAST STACK ===================== -->
+    <div class="toast-stack" id="toastStack"></div>
+
     <!-- ===================== JS CONTROLLER ===================== -->
     <script>
-        // 1. Dynamic Stats Counter Calculator
-        function updateDynamicStats() {
-            const items = JSON.parse(localStorage.getItem('findit_items')) || [];
-
-            // Active Lost Reports Count
-            const activeCount = items.filter(item => item.type && item.type.toUpperCase() === 'LOST').length;
-
-            // Verified / Recovered Items Count
-            const recoveredCount = items.filter(item => 
-                (item.type && item.type.toUpperCase() === 'FOUND') || item.status === 'Verified & Found' || item.status === 'Recovered'
-            ).length;
-
-            // Render Exact Values
-            document.getElementById('statActive').textContent = activeCount;
-            document.getElementById('statRecovered').textContent = recoveredCount;
-
-            // Match rate dynamically updates based on ratio
-            const total = activeCount + recoveredCount;
-            if (total > 0) {
-                const rate = Math.round((recoveredCount / total) * 100);
-                document.getElementById('statMatchRate').textContent = `${rate}%`;
-            } else {
-                document.getElementById('statMatchRate').textContent = '100%';
-            }
-        }
-
-        // 2. Light/Dark Mode Switcher Logic
+        /* ---------- Theme ---------- */
         function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('findit_theme', newTheme);
-            
-            updateThemeIcon(newTheme);
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('findit_theme', next);
+            updateThemeIcon(next);
         }
-
         function updateThemeIcon(theme) {
             const icon = document.getElementById('themeToggleIcon');
-            if (theme === 'dark') {
-                icon.className = 'fa-solid fa-sun';
-                icon.style.color = '#f59e0b';
-            } else {
-                icon.className = 'fa-solid fa-moon';
-                icon.style.color = 'inherit';
-            }
+            if (!icon) return;
+            if (theme === 'dark') { icon.className = 'fa-solid fa-sun'; icon.style.color = '#f59e0b'; }
+            else { icon.className = 'fa-solid fa-moon'; icon.style.color = 'inherit'; }
         }
 
-        // 3. Render Activity Grid
-        function renderRecentActivity() {
+        /* ---------- Data layer (localStorage) ---------- */
+        function getItems() {
+            const a = JSON.parse(localStorage.getItem('findit_all_reports') || '[]');
+            const b = JSON.parse(localStorage.getItem('findit_items') || '[]');
+            // Normalize both legacy stores into one shape
+            const merged = [];
+            a.forEach(it => merged.push(normalize(it, 'all_reports')));
+            b.forEach(it => merged.push(normalize(it, 'items')));
+            return merged;
+        }
+        function normalize(it, src) {
+            const type = (it.type || (src === 'items' ? 'LOST' : 'Lost')).toUpperCase();
+            const status = (it.status || '').toUpperCase();
+            return {
+                type,
+                title: it.itemName || it.title || it.name || 'Untitled Item',
+                description: it.description || 'No description provided.',
+                location: it.location || 'Campus',
+                date: it.date || 'Recently',
+                status,
+                category: it.category || '',
+                icon: it.icon || '',
+            };
+        }
+        function resolveIcon(item) {
+            const n = (item.title || '').toLowerCase();
+            const c = (item.category || '').toLowerCase();
+            if (n.includes('key') || c.includes('key')) return 'fa-key';
+            if (n.includes('laptop') || n.includes('hp') || c.includes('electronic')) return 'fa-laptop';
+            if (n.includes('id') || c.includes('id')) return 'fa-id-card';
+            if (n.includes('wallet') || c.includes('personal')) return 'fa-wallet';
+            if (n.includes('phone') || n.includes('mobile')) return 'fa-mobile-screen';
+            if (n.includes('book')) return 'fa-book';
+            if (n.includes('bag') || n.includes('backpack')) return 'fa-bag-shopping';
+            return item.icon || 'fa-box';
+        }
+
+        /* ---------- Stats ---------- */
+        function computeStats(items) {
+            const active = items.filter(i => i.type === 'LOST' && !['CLAIMED','RECOVERED','RESOLVED'].includes(i.status)).length;
+            const recovered = items.filter(i => i.type === 'FOUND' || ['CLAIMED','RECOVERED','RESOLVED'].includes(i.status)).length;
+            const total = active + recovered;
+            const rate = total > 0 ? Math.round((recovered / total) * 100) : 100;
+            return { active, recovered, rate };
+        }
+
+        function animateCount(el, target, suffix) {
+            if (!el) return;
+            const dur = 1100;
+            const start = performance.now();
+            function frame(now) {
+                const p = Math.min((now - start) / dur, 1);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.textContent = Math.round(eased * target) + (suffix || '');
+                if (p < 1) requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+        }
+
+        function renderStats() {
+            const s = computeStats(getItems());
+            animateCount(document.getElementById('statRecovered'), s.recovered);
+            animateCount(document.getElementById('statActive'), s.active);
+            document.getElementById('statMatchRate').textContent = s.rate + '%';
+            // dashboard preview
+            animateCount(document.getElementById('dpRecovered'), s.recovered);
+            animateCount(document.getElementById('dpActive'), s.active);
+            document.getElementById('dpMatch').textContent = s.rate + '%';
+        }
+
+        /* ---------- Dashboard live feed ---------- */
+        const feedPool = [
+            { type: 'FOUND', title: 'Student ID Card', where: 'Library Block', icon: 'fa-id-card' },
+            { type: 'LOST', title: 'Black Wallet', where: 'Cafeteria', icon: 'fa-wallet' },
+            { type: 'FOUND', title: 'HP Laptop Charger', where: 'Lab 3', icon: 'fa-plug' },
+            { type: 'LOST', title: 'Room Keys', where: 'Hostel B', icon: 'fa-key' },
+            { type: 'FOUND', title: 'Water Bottle', where: 'Sports Complex', icon: 'fa-bottle-water' },
+            { type: 'LOST', title: 'Phone (Samsung)', where: 'Auditorium', icon: 'fa-mobile-screen' },
+            { type: 'FOUND', title: 'Notebook', where: 'Lecture Hall 2', icon: 'fa-book' },
+            { type: 'LOST', title: 'Backpack', where: 'Bus Stop', icon: 'fa-bag-shopping' },
+        ];
+        function relTime(i) {
+            const m = i === 0 ? 'just now' : `${i}m ago`;
+            return m;
+        }
+        function renderFeed() {
+            const feed = document.getElementById('dpFeed');
+            if (!feed) return;
+            const items = getItems();
+            const list = items.length > 0 ? items.slice(0, 4) : feedPool.slice(0, 4);
+            feed.innerHTML = list.map((it, i) => {
+                const isLost = (it.type || '').toUpperCase() === 'LOST';
+                const icon = it.icon ? it.icon : resolveIcon(it);
+                return `<div class="dp-feed-item">
+                    <div class="ico ${isLost ? 'lost' : 'found'}"><i class="fa-solid ${icon}"></i></div>
+                    <div class="meta">
+                        <div class="t">${it.title}</div>
+                        <div class="s">${it.location || ''}</div>
+                    </div>
+                    <div class="time">${relTime(i)}</div>
+                </div>`;
+            }).join('');
+        }
+
+        /* ---------- Activity grid with filters ---------- */
+        let currentFilter = 'all';
+        function renderGrid() {
             const grid = document.getElementById('recentItemsGrid');
             if (!grid) return;
-
-            const items = JSON.parse(localStorage.getItem('findit_items')) || [];
-
+            let items = getItems();
+            // Seed demo data if empty so the page feels alive
             if (items.length === 0) {
-                grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">No reported items available yet.</p>`;
+                items = [
+                    { type:'LOST', title:'Black Wallet', description:'Leather wallet with student ID inside. Lost near cafeteria.', location:'Cafeteria', date:'2h ago', icon:'fa-wallet' },
+                    { type:'FOUND', title:'Student ID Card', description:'Found on library second floor. Name visible on card.', location:'Library Block', date:'5h ago', icon:'fa-id-card' },
+                    { type:'LOST', title:'HP Laptop Charger', description:'Black HP charger left in Lab 3 during evening class.', location:'Lab 3', date:'1d ago', icon:'fa-plug' },
+                    { type:'FOUND', title:'Room Keys', description:'Set of keys with red keychain found at Hostel B entrance.', location:'Hostel B', date:'1d ago', icon:'fa-key' },
+                    { type:'LOST', title:'Phone (Samsung)', description:'Samsung Galaxy in blue case. Lost after auditorium event.', location:'Auditorium', date:'2d ago', icon:'fa-mobile-screen' },
+                    { type:'FOUND', title:'Water Bottle', description:'Steel water bottle found at sports complex bench.', location:'Sports Complex', date:'3d ago', icon:'fa-bottle-water' },
+                ];
+            }
+            const counts = { all: items.length, lost: 0, found: 0 };
+            items.forEach(i => { if (i.type === 'LOST') counts.lost++; else counts.found++; });
+            document.getElementById('cntAll').textContent = counts.all;
+            document.getElementById('cntLost').textContent = counts.lost;
+            document.getElementById('cntFound').textContent = counts.found;
+
+            const filtered = currentFilter === 'all' ? items : items.filter(i => i.type === currentFilter.toUpperCase());
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No ${currentFilter} items reported yet.</p></div>`;
                 return;
             }
 
-            grid.innerHTML = items.slice(0, 8).map(item => {
-                const isLost = item.type && item.type.toUpperCase() === 'LOST';
-                const badgeClass = isLost ? 'badge-lost' : 'badge-found';
-                const icon = item.icon || (isLost ? 'fa-magnifying-glass' : 'fa-box-open');
-
+            grid.innerHTML = filtered.slice(0, 8).map(item => {
+                const isLost = item.type === 'LOST';
+                const icon = item.icon ? item.icon : resolveIcon(item);
                 return `
                     <div class="card">
                         <div>
-                            <div class="card-icon"><i class="fa-solid ${icon}"></i></div>
-                            <span class="badge ${badgeClass}">${item.type || 'REPORT'}</span>
-                            <h3 class="card-title">${item.title || item.name || 'Untitled Item'}</h3>
-                            <p class="card-desc">${item.description || 'No description provided.'}</p>
+                            <div class="card-top">
+                                <div class="card-icon ${isLost ? 'lost' : 'found'}"><i class="fa-solid ${icon}"></i></div>
+                                <span class="badge ${isLost ? 'badge-lost' : 'badge-found'}">${item.type}</span>
+                            </div>
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-desc">${item.description}</p>
                         </div>
                         <div class="card-footer">
-                            <span><i class="fa-solid fa-location-dot"></i> ${item.location || 'Campus'}</span>
-                            <span><i class="fa-regular fa-clock"></i> ${item.date || 'Recently'}</span>
+                            <span><i class="fa-solid fa-location-dot"></i> ${item.location}</span>
+                            <span><i class="fa-regular fa-clock"></i> ${item.date}</span>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            // Re-observe newly created cards
+            document.querySelectorAll('.card:not(.reveal)').forEach(el => cardObserver.observe(el));
+            // Attach pointer-tracking for hover glow
+            document.querySelectorAll('.card').forEach(el => {
+                el.addEventListener('mousemove', e => {
+                    const r = el.getBoundingClientRect();
+                    el.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+                    el.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+                });
+            });
         }
 
-        // 4. User Session & Navbar Sync
-        function checkUserSession() {
-            const loggedInUser = JSON.parse(localStorage.getItem('findit_logged_user'));
-            const navActions = document.getElementById('navActions');
+        /* ---------- Filter tab wiring ---------- */
+        function wireFilters() {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFilter = tab.dataset.filter;
+                    renderGrid();
+                });
+            });
+        }
 
-            if (loggedInUser && navActions) {
-                navActions.innerHTML = `
-                    <button onclick="toggleTheme()" class="btn-theme-toggle" id="themeToggleBtn" title="Toggle Light/Dark Theme">
+        /* ---------- Scroll reveal ---------- */
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('in');
+                    revealObserver.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((e, idx) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('reveal'), idx * 70);
+                    cardObserver.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        /* ---------- Toasts ---------- */
+        const toastMessages = [
+            { type:'found', icon:'fa-box-open', title:'New item found', sub:'Student ID Card • Library Block' },
+            { type:'lost', icon:'fa-magnifying-glass', title:'New lost report', sub:'Black Wallet • Cafeteria' },
+            { type:'info', icon:'fa-handshake', title:'Item matched!', sub:'HP Charger reunited with owner' },
+            { type:'found', icon:'fa-key', title:'Keys reported found', sub:'Room Keys • Hostel B' },
+        ];
+        let toastIndex = 0;
+        function showToast(msg) {
+            const stack = document.getElementById('toastStack');
+            const m = msg || toastMessages[toastIndex % toastMessages.length];
+            toastIndex++;
+            const el = document.createElement('div');
+            el.className = 'toast';
+            el.innerHTML = `
+                <div class="ico ${m.type}"><i class="fa-solid ${m.icon}"></i></div>
+                <div class="body"><div class="t">${m.title}</div><div class="s">${m.sub}</div></div>
+                <div class="progress"></div>
+            `;
+            stack.appendChild(el);
+            setTimeout(() => {
+                el.classList.add('out');
+                setTimeout(() => el.remove(), 400);
+            }, 4500);
+        }
+
+        /* ---------- Button ripple ---------- */
+        function wireRipples() {
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const r = document.createElement('span');
+                    r.className = 'ripple';
+                    const d = Math.max(btn.offsetWidth, btn.offsetHeight);
+                    r.style.width = r.style.height = d + 'px';
+                    const rect = btn.getBoundingClientRect();
+                    r.style.left = (e.clientX - rect.left - d/2) + 'px';
+                    r.style.top = (e.clientY - rect.top - d/2) + 'px';
+                    btn.appendChild(r);
+                    setTimeout(() => r.remove(), 600);
+                });
+            });
+        }
+
+        /* ---------- Session / navbar ---------- */
+        function checkUserSession() {
+            const u = JSON.parse(localStorage.getItem('findit_logged_user') || localStorage.getItem('loggedInUser') || 'null');
+            const nav = document.getElementById('navActions');
+            if (u && nav) {
+                const name = u.fullname || u.name || u.username || u.email || 'User';
+                const role = (u.role || 'Student').toUpperCase();
+                nav.innerHTML = `
+                    <button onclick="toggleTheme()" class="btn-theme-toggle" title="Toggle theme">
                         <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
                     </button>
-                    <div style="font-weight: 700; color: var(--primary-purple); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-circle-user" style="font-size: 1.2rem;"></i>
-                        <span>Hi ${loggedInUser.fullname || 'User'}! <small style="color: var(--text-muted); font-weight: 500;">(${loggedInUser.role || 'Student'})</small></span>
+                    <div style="display:flex;align-items:center;gap:10px;font-weight:700;color:var(--primary);font-size:0.9rem;">
+                        <i class="fa-solid fa-circle-user" style="font-size:1.3rem;"></i>
+                        <span>${name} <small style="color:var(--text-muted);font-weight:500;">(${role})</small></span>
                     </div>
-                    <button onclick="handleLogout()" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;">
+                    <button onclick="handleLogout()" class="btn btn-outline" style="padding:8px 14px;font-size:0.85rem;">
                         <i class="fa-solid fa-right-from-bracket"></i> Logout
                     </button>
                 `;
+                updateThemeIcon(localStorage.getItem('findit_theme') || 'light');
+                wireRipples();
             }
         }
-
         function handleLogout() {
             localStorage.removeItem('findit_logged_user');
+            localStorage.removeItem('loggedInUser');
             window.location.reload();
         }
 
-        // 5. Typewriter Effect Logic
-        const typewriterElement = document.getElementById('typewriter');
+        /* ---------- Typewriter ---------- */
         const phrases = ['FindIt Fast.', 'Recover Items.', 'Connect Campus.'];
-        let phraseIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-
+        let pIdx = 0, cIdx = 0, deleting = false;
         function type() {
-            const currentPhrase = phrases[phraseIndex];
-            
-            if (isDeleting) {
-                typewriterElement.textContent = currentPhrase.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                typewriterElement.textContent = currentPhrase.substring(0, charIndex + 1);
-                charIndex++;
-            }
-
-            let typeSpeed = isDeleting ? 50 : 100;
-
-            if (!isDeleting && charIndex === currentPhrase.length) {
-                typeSpeed = 2000;
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-                typeSpeed = 500;
-            }
-
-            setTimeout(type, typeSpeed);
+            const el = document.getElementById('typewriter');
+            if (!el) return;
+            const cur = phrases[pIdx];
+            if (deleting) { el.textContent = cur.substring(0, cIdx - 1); cIdx--; }
+            else { el.textContent = cur.substring(0, cIdx + 1); cIdx++; }
+            let speed = deleting ? 45 : 95;
+            if (!deleting && cIdx === cur.length) { speed = 2000; deleting = true; }
+            else if (deleting && cIdx === 0) { deleting = false; pIdx = (pIdx + 1) % phrases.length; speed = 450; }
+            setTimeout(type, speed);
         }
 
-        // Initialize App
+        /* ---------- Init ---------- */
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('findit_theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcon(savedTheme);
 
             checkUserSession();
-            updateDynamicStats();
-            renderRecentActivity();
+            renderStats();
+            renderGrid();
+            renderFeed();
+            wireFilters();
+            wireRipples();
             type();
+
+            document.querySelectorAll('.reveal-up').forEach(el => revealObserver.observe(el));
+            document.querySelectorAll('.card').forEach(el => cardObserver.observe(el));
+
+            // Periodic live toasts to make the page feel alive
+            setTimeout(() => showToast(), 2500);
+            setInterval(() => showToast(), 9000);
+
+            // Periodically refresh the feed (rotates rel-times)
+            setInterval(renderFeed, 5000);
         });
     </script>
 
-    <!-- Main JavaScript App Controller -->
     <script src="js/app.js"></script>
 </body>
 </html>
