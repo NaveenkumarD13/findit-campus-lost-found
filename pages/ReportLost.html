@@ -5,334 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FindIt — Report Lost Item</title>
 
-    <!-- Title Logo / Favicon -->
-    <link rel="icon" type="image/x-icon" href="../images/findit.jpeg">
-    <link rel="shortcut icon" type="image/jpeg" href="../images/findit.jpeg">
-
-    <!-- Font Awesome Icons -->
+    <link rel="icon" type="image/jpeg" href="../images/findit.jpeg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-purple: #5b46f6;
-            --primary-red: #ef4444;
-            --primary-red-hover: #dc2626;
-            --bg-body: #f8fafc;
-            --border-color: #e2e8f0;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-glow: rgba(79, 70, 229, 0.35);
+            --accent: #06b6d4;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --danger-glow: rgba(239, 68, 68, 0.3);
+            --bg-body: #f6f7fb;
+            --bg-card: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
+            --text-soft: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-soft: #eef2f7;
+            --card-shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06);
+        }
+        [data-theme="dark"] {
+            --bg-body: #0a0f1e;
+            --bg-card: #131a2e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-soft: #64748b;
+            --border-color: #243049;
+            --border-soft: #1e293f;
+            --card-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.4s, color 0.4s; }
 
-        body {
-            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: var(--text-main);
-        }
+        .ambient-bg { position: fixed; inset: 0; z-index: -2; background-image: radial-gradient(circle at center, var(--border-soft) 1px, transparent 1.5px); background-size: 28px 28px; pointer-events: none; }
 
-        /* Navbar Styling */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 8%;
-            background-color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 6%; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 1.35rem; font-weight: 800; color: var(--primary); }
+        .navbar-brand img { width: 38px; height: 38px; border-radius: 10px; object-fit: contain; background: #fff; padding: 2px; border: 1px solid var(--border-color); }
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .btn { padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 0.88rem; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); transition: all 0.2s; }
+        .btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(79,70,229,0.06); }
+        .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 6px 16px var(--primary-glow); }
+        .btn-primary:hover { background: var(--primary-hover); color: #fff; }
+        .btn-theme-toggle { background: none; border: 1px solid var(--border-color); font-size: 1.1rem; cursor: pointer; color: var(--text-main); padding: 9px; border-radius: 10px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .btn-theme-toggle:hover { border-color: var(--primary); color: var(--primary); transform: rotate(20deg); }
 
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--primary-purple);
-        }
+        /* Form */
+        .form-wrapper { max-width: 760px; margin: 2rem auto; width: 92%; flex: 1; }
+        .form-card { background: var(--bg-card); border-radius: 24px; padding: 2.5rem; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); position: relative; overflow: hidden; }
+        .form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--danger), #f97316); }
 
-        .brand-logo-container {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #eef2ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-color);
-        }
+        .form-header { text-align: center; margin-bottom: 2rem; }
+        .badge-pill { background: rgba(239,68,68,0.12); color: var(--danger); padding: 6px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 0.75rem; }
+        .form-header h2 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
+        .form-header p { color: var(--text-muted); font-size: 0.92rem; margin-top: 4px; }
 
-        .brand-logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn {
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            text-decoration: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid var(--border-color);
-            background: transparent;
-            color: var(--text-main);
-            transition: all 0.2s ease;
-        }
-
-        .btn:hover {
-            border-color: var(--primary-purple);
-            color: var(--primary-purple);
-            background-color: rgba(91, 70, 246, 0.05);
-        }
-
-        /* Form Layout */
-        .form-wrapper {
-            max-width: 680px;
-            margin: 2.5rem auto;
-            width: 90%;
-            flex: 1;
-        }
-
-        .form-card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 2.5rem;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 20px 40px -15px rgba(79, 70, 229, 0.08);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .form-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, #ef4444, #f97316);
-        }
-
-        .form-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .form-header .badge-pill {
-            background: #fee2e2;
-            color: #ef4444;
-            padding: 0.35rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .form-header h2 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.02em;
-        }
-
-        .form-header p {
-            color: #64748b;
-            font-size: 0.925rem;
-            margin-top: 0.35rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-        }
-
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
         .full-width { grid-column: span 2; }
+        .form-group { display: flex; flex-direction: column; gap: 0.45rem; }
+        .form-group label { font-size: 0.83rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+        .input-box { position: relative; display: flex; align-items: center; }
+        .input-box > i { position: absolute; left: 14px; color: var(--text-soft); font-size: 0.95rem; pointer-events: none; transition: color 0.2s; }
+        .form-input { width: 100%; padding: 0.8rem 1rem 0.8rem 2.75rem; border-radius: 12px; border: 1.5px solid var(--border-color); outline: none; font-size: 0.92rem; color: var(--text-main); background: var(--bg-body); transition: all 0.2s; }
+        .form-input:focus { background: var(--bg-card); border-color: var(--danger); box-shadow: 0 0 0 4px rgba(239,68,68,0.1); }
+        .form-input:focus + i { color: var(--danger); }
+        textarea.form-input { padding-left: 1rem; resize: vertical; min-height: 90px; font-family: inherit; }
+        select.form-input { padding-left: 2.75rem; cursor: pointer; }
+        select.form-input option { background: var(--bg-card); color: var(--text-main); }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
+        /* Drag-drop upload */
+        .dropzone { border: 2px dashed var(--border-color); background: var(--bg-body); border-radius: 16px; padding: 2rem 1.5rem; text-align: center; cursor: pointer; transition: all 0.25s; position: relative; }
+        .dropzone:hover, .dropzone.dragover { border-color: var(--danger); background: rgba(239,68,68,0.04); }
+        .dropzone.dragover { transform: scale(1.01); }
+        .dropzone-icon { font-size: 2.2rem; color: var(--danger); margin-bottom: 0.75rem; }
+        .dropzone-text { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        .dropzone-hint { font-size: 0.76rem; color: var(--text-soft); margin-top: 4px; }
+        .preview-container { display: none; margin-top: 1rem; }
+        .preview-container.show { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .preview-image { width: 140px; height: 140px; border-radius: 14px; object-fit: cover; border: 2px solid var(--border-color); margin: 0 auto; display: block; }
+        .preview-remove { display: block; margin: 0.75rem auto 0; background: none; border: 1px solid var(--danger); color: var(--danger); padding: 6px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .preview-remove:hover { background: var(--danger); color: #fff; }
 
-        .form-group label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #334155;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
+        .btn-submit { background: linear-gradient(135deg, var(--danger), #dc2626); color: #fff; font-weight: 700; padding: 0.9rem; border-radius: 12px; border: none; cursor: pointer; width: 100%; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 20px -5px var(--danger-glow); transition: transform 0.2s, box-shadow 0.2s; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 15px 25px -5px var(--danger-glow); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .input-box {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .input-box i {
-            position: absolute;
-            left: 1rem;
-            color: #94a3b8;
-            font-size: 1rem;
-            transition: color 0.2s;
-        }
+        .toast { position: fixed; top: 80px; right: 24px; z-index: 200; display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; box-shadow: 0 12px 32px rgba(15,23,42,0.16); max-width: 340px; animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1); }
+        .toast.out { animation: toastOut 0.3s forwards; }
+        @keyframes toastIn { from { opacity:0; transform: translateX(120%); } to { opacity:1; transform: translateX(0); } }
+        @keyframes toastOut { to { opacity:0; transform: translateX(120%); } }
+        .toast .ico { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .toast .ico.success { background: rgba(22,163,74,0.14); color: var(--success); }
+        .toast .ico.error { background: rgba(239,68,68,0.14); color: var(--danger); }
+        .toast .ico.info { background: rgba(79,70,229,0.14); color: var(--primary); }
+        .toast .body .t { font-weight:700; font-size:0.85rem; color: var(--text-main); }
+        .toast .body .s { font-size:0.75rem; color: var(--text-muted); margin-top:2px; }
 
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.75rem;
-            border-radius: 12px;
-            border: 1.5px solid #e2e8f0;
-            outline: none;
-            font-size: 0.925rem;
-            color: #0f172a;
-            background: #f8fafc;
-            transition: all 0.2s ease;
-        }
-
-        .form-input:focus {
-            background: #ffffff;
-            border-color: #ef4444;
-            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
-        }
-
-        .form-input:focus + i { color: #ef4444; }
-
-        textarea.form-input {
-            padding-left: 1rem;
-            resize: vertical;
-            min-height: 90px;
-        }
-
-        /* Item Preview Box */
-        .item-preview-box {
-            border: 2px solid #e2e8f0;
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .preview-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 2px solid #e2e8f0;
-            background: white;
-            display: none;
-        }
-
-        .preview-image.show {
-            display: block;
-        }
-
-        .preview-icon {
-            font-size: 3rem;
-            color: #ef4444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 120px;
-            height: 120px;
-            background: #fee2e2;
-            border-radius: 12px;
-        }
-
-        .preview-icon.hide {
-            display: none;
-        }
-
-        .preview-text {
-            font-size: 0.85rem;
-            color: #64748b;
-            font-weight: 500;
-        }
-
-        /* Upload Container */
-        .upload-box {
-            border: 2px dashed #cbd5e1;
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .upload-box:hover {
-            border-color: #ef4444;
-            background: #fff5f5;
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            font-weight: 700;
-            padding: 0.85rem;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px -5px rgba(239, 68, 68, 0.4);
-        }
+        .site-footer { background: #0a0f1e; color: #94a3b8; padding: 18px 6%; margin-top: auto; text-align: center; font-size: 0.82rem; }
 
         @media (max-width: 640px) {
             .form-grid { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
+            .form-card { padding: 1.75rem 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header Navbar -->
+    <div class="ambient-bg"></div>
+
     <header class="navbar">
         <a href="../index.html" class="navbar-brand">
-            <div class="brand-logo-container">
-                <img src="../images/findit.jpeg" alt="FindIt Logo" onerror="this.remove()">
-            </div>
+            <img src="../images/findit.jpeg" alt="FindIt" onerror="this.style.display='none'">
             <span>FindIt</span>
         </a>
-        <div class="nav-actions" id="navActions">
+        <div class="nav-actions">
+            <button onclick="toggleTheme()" class="btn-theme-toggle" id="themeToggleBtn"><i id="themeToggleIcon" class="fa-solid fa-moon"></i></button>
             <a href="../index.html" class="btn"><i class="fa-solid fa-house"></i> Home</a>
         </div>
     </header>
@@ -345,45 +146,32 @@
                 <p>Provide details to alert students across campus and speed up recovery</p>
             </div>
 
-            <!-- Item Preview Section -->
-            <div class="item-preview-box" id="previewBox">
-                <div class="preview-icon" id="previewIcon">
-                    <i class="fa-solid fa-box"></i>
-                </div>
-                <img id="previewImage" class="preview-image" alt="Item preview">
-                <div class="preview-text" id="previewText">Type item name to see preview</div>
-            </div>
-
-            <form id="lostReportForm" onsubmit="handleLostFormSubmit(event)">
+            <form id="lostReportForm" onsubmit="handleLostFormSubmit(event)" autocomplete="off">
                 <div class="form-grid">
-                    
-                    <!-- Item Name -->
                     <div class="form-group full-width">
                         <label for="itemName"><i class="fa-solid fa-tag"></i> Item Name *</label>
                         <div class="input-box">
-                            <input type="text" id="itemName" class="form-input" placeholder="e.g. Blue Dell Laptop / Black Leather Wallet" required onkeyup="updateItemPreview()">
+                            <input type="text" id="itemName" class="form-input" placeholder="e.g. Blue Dell Laptop / Black Leather Wallet" required>
                             <i class="fa-solid fa-box"></i>
                         </div>
                     </div>
 
-                    <!-- Category -->
                     <div class="form-group">
                         <label for="category"><i class="fa-solid fa-layer-group"></i> Category *</label>
                         <div class="input-box">
-                            <select id="category" class="form-input" required style="padding-left: 2.75rem;" onchange="updateItemPreview()">
+                            <select id="category" class="form-input" required>
                                 <option value="" disabled selected>Select Category</option>
-                                <option value="Electronics">Electronics & Gadgets</option>
-                                <option value="ID Card">ID & Official Cards</option>
-                                <option value="Keys">Keys & Chains</option>
-                                <option value="Study Material">Books & Calculators</option>
-                                <option value="Personal Belongings">Bags & Wallets</option>
+                                <option value="Electronics">Electronics &amp; Gadgets</option>
+                                <option value="ID Card">ID &amp; Official Cards</option>
+                                <option value="Keys">Keys &amp; Chains</option>
+                                <option value="Study Material">Books &amp; Calculators</option>
+                                <option value="Personal Belongings">Bags &amp; Wallets</option>
                                 <option value="Others">Others</option>
                             </select>
                             <i class="fa-solid fa-list-check"></i>
                         </div>
                     </div>
 
-                    <!-- Lost Location -->
                     <div class="form-group">
                         <label for="location"><i class="fa-solid fa-location-dot"></i> Lost Location *</label>
                         <div class="input-box">
@@ -392,45 +180,52 @@
                         </div>
                     </div>
 
-                    <!-- Date & Time Lost -->
                     <div class="form-group">
-                        <label for="lostDate"><i class="fa-solid fa-calendar-day"></i> Approx. Date/Time</label>
+                        <label for="lostDate"><i class="fa-solid fa-calendar-day"></i> Date Lost</label>
                         <div class="input-box">
-                            <input type="text" id="lostDate" class="form-input" placeholder="e.g. Today around 11:30 AM">
+                            <input type="date" id="lostDate" class="form-input">
                             <i class="fa-solid fa-clock"></i>
                         </div>
                     </div>
 
-                    <!-- Contact Info -->
                     <div class="form-group">
-                        <label for="contactInfo"><i class="fa-solid fa-phone"></i> Contact Phone / WhatsApp *</label>
+                        <label for="contactInfo"><i class="fa-solid fa-phone"></i> Contact Phone *</label>
                         <div class="input-box">
-                            <input type="text" id="contactInfo" class="form-input" placeholder="e.g. +91 9876543210" required>
+                            <input type="tel" id="contactInfo" class="form-input" placeholder="e.g. +91 9876543210" required>
                             <i class="fa-solid fa-mobile-screen"></i>
                         </div>
                     </div>
 
-                    <!-- Description -->
                     <div class="form-group full-width">
-                        <label for="description"><i class="fa-solid fa-align-left"></i> Description & Specific Identifiers</label>
-                        <textarea id="description" class="form-input" placeholder="Mention stickers, scratches, brand name, or specific contents inside to verify ownership..."></textarea>
-                    </div>
-
-                    <!-- Reference Photo -->
-                    <div class="form-group full-width">
-                        <label><i class="fa-solid fa-image"></i> Reference Photo (Optional)</label>
-                        <div class="upload-box" onclick="document.getElementById('itemImage').click()">
-                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: #ef4444; margin-bottom: 0.5rem;"></i>
-                            <p style="font-size: 0.875rem; font-weight: 600; color: #334155;">Click to upload item image</p>
-                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.2rem;" id="fileNameDisplay">PNG, JPG up to 5MB</p>
-                            <input type="file" id="itemImage" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+                        <label for="ownerName"><i class="fa-solid fa-user"></i> Owner Name *</label>
+                        <div class="input-box">
+                            <input type="text" id="ownerName" class="form-input" placeholder="Your full name" required>
+                            <i class="fa-solid fa-id-badge"></i>
                         </div>
                     </div>
 
+                    <div class="form-group full-width">
+                        <label for="description"><i class="fa-solid fa-align-left"></i> Description &amp; Identifiers</label>
+                        <textarea id="description" class="form-input" placeholder="Mention stickers, scratches, brand name, or specific contents inside to verify ownership..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label><i class="fa-solid fa-image"></i> Item Image (Drag &amp; Drop or Click)</label>
+                        <div class="dropzone" id="dropzone">
+                            <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                            <div class="dropzone-text">Drag &amp; drop your item image here</div>
+                            <div class="dropzone-hint">or click to browse — PNG, JPG up to 5MB</div>
+                            <input type="file" id="itemImage" accept="image/*" style="display:none;">
+                        </div>
+                        <div class="preview-container" id="previewContainer">
+                            <img id="previewImage" class="preview-image" alt="Preview">
+                            <button type="button" class="preview-remove" onclick="removeImage()"><i class="fa-solid fa-trash"></i> Remove Image</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div style="margin-top: 2rem;">
-                    <button type="submit" class="btn-submit">
+                    <button type="submit" class="btn-submit" id="btnSubmit">
                         <i class="fa-solid fa-paper-plane"></i> Publish Lost Item Report
                     </button>
                 </div>
@@ -438,172 +233,123 @@
         </div>
     </main>
 
-    <!-- Script Block -->
+    <footer class="site-footer">&copy; 2026 FindIt Campus System. All rights reserved.</footer>
+
     <script>
-    // 🔒 AUTH GUARD: Throw user to Register page if not registered/logged in
+    const savedTheme = localStorage.getItem('findit_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('findit_theme', next);
+        document.getElementById('themeToggleIcon').className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+    document.getElementById('themeToggleIcon').className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+
+    // Auth guard
     document.addEventListener('DOMContentLoaded', () => {
-        const loggedInUser = JSON.parse(localStorage.getItem('findit_logged_user'));
-        
-        if (!loggedInUser) {
-            alert('⚠️ Please register or log in first to report a lost item!');
-            window.location.href = 'Register.html';
-        }
+        const u = JSON.parse(localStorage.getItem('findit_logged_user'));
+        if (!u) { showToast('info', 'Login Required', 'Please log in to report a lost item.'); setTimeout(() => window.location.href = 'Login.html', 1200); }
+        else { document.getElementById('ownerName').value = u.fullname || ''; }
     });
 
-    // Enhanced icon mapping with multiple keywords
-    const itemKeywordMap = {
-        'Electronics': {
-            keywords: ['laptop', 'phone', 'mobile', 'iphone', 'samsung', 'computer', 'tablet', 'headphone', 'earbuds', 'camera', 'watch', 'mouse', 'keyboard', 'monitor', 'printer', 'speaker', 'charger', 'cable'],
-            icon: 'fa-laptop',
-            imageSearch: 'electronics gadget'
-        },
-        'ID Card': {
-            keywords: ['id', 'card', 'aadhar', 'passport', 'license', 'certificate', 'document', 'credentials'],
-            icon: 'fa-id-card',
-            imageSearch: 'id card'
-        },
-        'Keys': {
-            keywords: ['key', 'keys', 'keychain', 'chain', 'lock', 'door key'],
-            icon: 'fa-key',
-            imageSearch: 'keys keychain'
-        },
-        'Study Material': {
-            keywords: ['book', 'notebook', 'pen', 'pencil', 'calculator', 'notes', 'textbook', 'journal'],
-            icon: 'fa-calculator',
-            imageSearch: 'books calculator'
-        },
-        'Personal Belongings': {
-            keywords: ['wallet', 'bag', 'purse', 'backpack', 'jacket', 'shoe', 'shoes', 'belt', 'scarf', 'glasses', 'watch', 'jewelry', 'ring', 'bracelet'],
-            icon: 'fa-wallet',
-            imageSearch: 'wallet bag'
-        },
-        'Others': {
-            keywords: [],
-            icon: 'fa-box',
-            imageSearch: 'lost item'
-        }
-    };
+    // Drag & drop
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('itemImage');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    let uploadedImage = '';
 
-    function getItemImageURL(itemName, category) {
-        // Using Unsplash API for free images (no API key needed for basic usage)
-        const searchQuery = encodeURIComponent(itemName || (category === 'Electronics' ? 'laptop' : 'lost item'));
-        
-        // Build Unsplash search URL with random parameter to get different images
-        const randomId = Math.random().toString(36).substring(7);
-        const url = `https://source.unsplash.com/200x200/?${searchQuery},${randomId}`;
-        
-        return url;
-    }
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => {
+        e.preventDefault(); dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
 
-    function resolveIconAndImage(itemName) {
-        const name = itemName.toLowerCase();
-        let selectedCategory = 'Others';
-        let selectedIcon = 'fa-box';
-        let imageURL = '';
-
-        // Check which category matches the item name
-        for (const [category, data] of Object.entries(itemKeywordMap)) {
-            for (const keyword of data.keywords) {
-                if (name.includes(keyword)) {
-                    selectedCategory = category;
-                    selectedIcon = data.icon;
-                    break;
-                }
-            }
-        }
-
-        // Generate image URL from Unsplash
-        imageURL = getItemImageURL(itemName, selectedCategory);
-
-        return { selectedIcon, imageURL, selectedCategory };
-    }
-
-    function updateItemPreview() {
-        const itemName = document.getElementById('itemName').value.trim();
-        const category = document.getElementById('category').value;
-        const previewIcon = document.getElementById('previewIcon');
-        const previewImage = document.getElementById('previewImage');
-        const previewText = document.getElementById('previewText');
-
-        if (itemName.length === 0) {
-            previewIcon.classList.remove('hide');
-            previewImage.classList.remove('show');
-            previewText.textContent = 'Type item name to see preview';
-            previewIcon.innerHTML = '<i class="fa-solid fa-box"></i>';
-            return;
-        }
-
-        // Get icon and image based on item name
-        const { selectedIcon, imageURL, selectedCategory } = resolveIconAndImage(itemName);
-
-        // Update icon
-        previewIcon.innerHTML = `<i class="fa-solid ${selectedIcon}"></i>`;
-        previewIcon.classList.remove('hide');
-
-        // Load image
-        previewImage.onload = function() {
-            previewImage.classList.add('show');
-            previewIcon.classList.add('hide');
+    function handleFile(file) {
+        if (!file.type.startsWith('image/')) { showToast('error', 'Invalid File', 'Please upload an image file.'); return; }
+        if (file.size > 5 * 1024 * 1024) { showToast('error', 'File Too Large', 'Maximum size is 5MB.'); return; }
+        const reader = new FileReader();
+        reader.onload = e => {
+            uploadedImage = e.target.result;
+            previewImage.src = uploadedImage;
+            previewContainer.classList.add('show');
+            showToast('success', 'Image Added', file.name);
         };
-
-        previewImage.onerror = function() {
-            // If image fails, just show icon
-            previewImage.classList.remove('show');
-            previewIcon.classList.remove('hide');
-        };
-
-        previewImage.src = imageURL;
-        previewText.textContent = `📦 ${itemName} (${selectedCategory})`;
+        reader.readAsDataURL(file);
     }
 
-    function updateFileName(input) {
-        const display = document.getElementById('fileNameDisplay');
-        if (input.files && input.files[0]) {
-            display.textContent = "Selected: " + input.files[0].name;
-            display.style.color = "#ef4444";
-            display.style.fontWeight = "700";
-        }
+    function removeImage() {
+        uploadedImage = '';
+        previewImage.src = '';
+        previewContainer.classList.remove('show');
+        fileInput.value = '';
+    }
+
+    function showToast(type, title, sub) {
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.innerHTML = `<div class="ico ${type}"><i class="fa-solid ${icons[type]}"></i></div><div class="body"><div class="t">${title}</div><div class="s">${sub}</div></div>`;
+        document.body.appendChild(el);
+        setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 3500);
+    }
+
+    function resolveIcon(itemName, category) {
+        const n = (itemName || '').toLowerCase();
+        const c = (category || '').toLowerCase();
+        if (n.includes('key') || c.includes('key')) return 'fa-key';
+        if (n.includes('laptop') || n.includes('hp') || c.includes('electronic')) return 'fa-laptop';
+        if (n.includes('id') || c.includes('id')) return 'fa-id-card';
+        if (n.includes('wallet') || c.includes('personal')) return 'fa-wallet';
+        if (n.includes('phone') || n.includes('mobile')) return 'fa-mobile-screen';
+        if (n.includes('book')) return 'fa-book';
+        if (n.includes('bag') || n.includes('backpack')) return 'fa-bag-shopping';
+        return 'fa-box';
     }
 
     function handleLostFormSubmit(e) {
         e.preventDefault();
-
         const activeUser = JSON.parse(localStorage.getItem('findit_logged_user'));
+        if (!activeUser) { showToast('error', 'Session Expired', 'Please log in first.'); setTimeout(() => window.location.href = 'Login.html', 1200); return; }
 
-        if (!activeUser) {
-            alert('⚠️ Session expired! Please register or log in first.');
-            window.location.href = 'Register.html';
-            return;
-        }
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Publishing...';
 
         const itemName = document.getElementById('itemName').value;
-        const { selectedIcon, imageURL } = resolveIconAndImage(itemName);
+        const icon = resolveIcon(itemName, document.getElementById('category').value);
 
         const newReport = {
             id: 'R-' + Date.now(),
-            itemName: itemName,
             type: 'Lost',
+            itemName,
             category: document.getElementById('category').value || 'Others',
             location: document.getElementById('location').value,
             lostDate: document.getElementById('lostDate').value || 'Recently',
             contact: document.getElementById('contactInfo').value,
+            ownerName: document.getElementById('ownerName').value,
             description: document.getElementById('description').value || 'No extra description provided.',
             userName: activeUser.fullname || 'Student',
             dept: activeUser.dept || activeUser.role || 'General',
             userEmail: activeUser.email,
             status: 'PENDING',
-            icon: selectedIcon,
-            imageURL: imageURL, // NEW: Store image URL
+            icon,
+            imageURL: uploadedImage || '',
             createdAt: Date.now()
         };
 
-        // Save to LocalStorage
-        const existingReports = JSON.parse(localStorage.getItem('findit_all_reports')) || [];
-        existingReports.unshift(newReport);
-        localStorage.setItem('findit_all_reports', JSON.stringify(existingReports));
+        const reports = JSON.parse(localStorage.getItem('findit_all_reports') || '[]');
+        reports.unshift(newReport);
+        localStorage.setItem('findit_all_reports', JSON.stringify(reports));
 
-        alert('🚀 Missing Item Report Published Successfully!');
-        window.location.href = '../index.html';
+        setTimeout(() => {
+            showToast('success', 'Report Published', 'Your lost item report is now live!');
+            setTimeout(() => window.location.href = '../index.html', 1000);
+        }, 800);
     }
     </script>
 </body>

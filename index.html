@@ -918,6 +918,7 @@
 
         <ul class="navbar-nav">
             <li><a href="index.html">Home</a></li>
+            <li><a href="pages/SmartSearch.html">Smart Search</a></li>
             <li><a href="#recent">Recent Activity</a></li>
             <li><a href="#how">How It Works</a></li>
         </ul>
@@ -1408,9 +1409,7 @@
             document.querySelectorAll('.reveal-up').forEach(el => revealObserver.observe(el));
             document.querySelectorAll('.card').forEach(el => cardObserver.observe(el));
 
-            // Periodic live toasts to make the page feel alive
-            setTimeout(() => showToast(), 2500);
-            setInterval(() => showToast(), 9000);
+            // Toasts disabled
 
             // Periodically refresh the feed (rotates rel-times)
             setInterval(renderFeed, 5000);

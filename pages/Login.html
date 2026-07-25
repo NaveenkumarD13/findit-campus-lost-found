@@ -4,341 +4,501 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FindIt — Welcome Back</title>
-    
-    <!-- Relative Path Fix for Subfolder -->
+
     <link rel="icon" type="image/jpeg" href="../images/findit.jpeg">
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-purple: #5b46f6;
-            --primary-hover: #4a35e0;
-            --bg-body: #f8fafc;
-            --bg-nav: #ffffff;
-            --bg-card: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --footer-bg: #090d16;
-            --footer-text: #94a3b8;
-        }
-
-        [data-theme="dark"] {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-glow: rgba(79, 70, 229, 0.35);
+            --accent: #06b6d4;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --bg-body: #0f172a;
-            --bg-nav: #1e293b;
-            --bg-card: #1e293b;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-card: rgba(255, 255, 255, 0.10);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --border-color: #334155;
+            --text-soft: #64748b;
+            --input-bg: rgba(255, 255, 255, 0.06);
+            --input-border: rgba(255, 255, 255, 0.12);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            font-family: 'Inter', -apple-system, sans-serif;
         }
 
+        html { scroll-behavior: smooth; }
+
         body {
-            background-color: var(--bg-body);
+            background: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Navbar Styling */
+        /* Animated gradient background */
+        .animated-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0c4a6e, #134e4a);
+            background-size: 400% 400%;
+            animation: gradientShift 18s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 12s ease-in-out infinite;
+        }
+        .orb-1 { width: 400px; height: 400px; background: #4f46e5; top: -100px; left: -100px; }
+        .orb-2 { width: 350px; height: 350px; background: #06b6d4; bottom: -80px; right: -80px; animation-delay: -4s; }
+        .orb-3 { width: 300px; height: 300px; background: #7c3aed; top: 40%; left: 50%; animation-delay: -8s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* Navbar */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 8%;
-            background-color: var(--bg-nav);
-            border-bottom: 1px solid var(--border-color);
+            padding: 16px 6%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
             z-index: 100;
         }
-
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 12px;
             text-decoration: none;
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 800;
-            color: var(--primary-purple);
+            color: #fff;
+            letter-spacing: -0.02em;
         }
-
-        .brand-logo-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #eef2ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-color);
+        .navbar-brand img {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            object-fit: contain;
+            background: #fff;
+            padding: 2px;
         }
-
-        .brand-logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .brand-logo-container i {
-            font-size: 1.3rem;
-            color: var(--primary-purple);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 10px 22px;
-            border-radius: 8px;
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .btn-nav {
+            padding: 9px 18px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             text-decoration: none;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: none;
-        }
-
-        .btn-outline {
-            border: 1px solid var(--border-color);
-            color: var(--primary-purple);
+            gap: 7px;
+            border: 1px solid var(--glass-border);
             background: transparent;
+            color: #fff;
+            transition: all 0.25s ease;
         }
+        .btn-nav:hover { border-color: var(--primary); background: rgba(79,70,229,0.2); }
+        .btn-nav.primary { background: var(--primary); border-color: var(--primary); }
+        .btn-nav.primary:hover { background: var(--primary-hover); }
 
-        .btn-outline:hover {
-            border-color: var(--primary-purple);
-            background-color: rgba(91, 70, 246, 0.08);
-        }
-
-        .btn-primary {
-            background-color: var(--primary-purple);
-            color: #ffffff;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-block {
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-        }
-
-        /* Auth Container */
+        /* Auth container */
         .auth-container {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3rem 1.5rem;
-            background: radial-gradient(circle at 50% 20%, rgba(91, 70, 246, 0.05) 0%, transparent 70%);
+            padding: 2rem 1.5rem;
         }
 
         .auth-card {
             width: 100%;
-            max-width: 450px;
-            background: var(--bg-card);
-            border-radius: 16px;
+            max-width: 440px;
+            background: var(--glass-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
             padding: 2.5rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.05);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
 
-        .auth-header { 
-            text-align: center; 
-            margin-bottom: 1.5rem; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .auth-header {
+            text-align: center;
+            margin-bottom: 1.75rem;
         }
-
-        .header-logo-wrapper {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            background: #eef2ff;
+        .header-logo {
+            width: 60px; height: 60px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 0.75rem;
-            border: 1px solid var(--border-color);
+            margin: 0 auto 1rem;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
         }
+        .header-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; }
+        .auth-header h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+        .auth-header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
 
-        .header-logo-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.05);
             border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 1.75rem;
+            gap: 4px;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+        .auth-tab.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px var(--primary-glow);
         }
 
-        .header-logo-wrapper i {
-            font-size: 1.8rem;
-            color: var(--primary-purple);
+        /* Form */
+        .form-panel { display: none; animation: fadeSlide 0.4s ease; }
+        .form-panel.active { display: block; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .auth-header h2 { 
-            font-size: 1.65rem; 
-            font-weight: 800; 
-            color: var(--text-main); 
+        .form-group { margin-bottom: 1.15rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
         }
+        .input-wrapper { position: relative; }
+        .input-wrapper > i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-soft);
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.75rem;
+            border: 1.5px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 0.92rem;
+            outline: none;
+            background: var(--input-bg);
+            color: var(--text-main);
+            transition: all 0.25s ease;
+        }
+        .input-wrapper input::placeholder { color: var(--text-soft); }
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+            background: rgba(79,70,229,0.08);
+            box-shadow: 0 0 0 4px rgba(79,70,229,0.15);
+        }
+        .input-wrapper input:focus + i { color: var(--primary); }
 
-        .auth-header p { 
-            color: var(--text-muted); 
-            font-size: 0.9rem; 
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            left: auto;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-soft);
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .toggle-password:hover { color: var(--primary); }
+
+        /* Password strength */
+        .strength-bar {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .strength-segment {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.1);
+            transition: background 0.3s ease;
+        }
+        .strength-segment.weak { background: var(--danger); }
+        .strength-segment.medium { background: var(--warning); }
+        .strength-segment.strong { background: var(--success); }
+        .strength-label {
+            font-size: 0.72rem;
             margin-top: 4px;
+            font-weight: 600;
         }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        .form-row a {
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .form-row a:hover { text-decoration: underline; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px var(--primary-glow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 28px var(--primary-glow); }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .auth-message {
-            display: none; 
-            padding: 0.75rem 1rem; 
+            display: none;
+            padding: 0.7rem 1rem;
             border-radius: 10px;
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            margin-bottom: 1.25rem; 
+            font-size: 0.83rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
             text-align: center;
         }
+        .auth-message.error { display: block; background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+        .auth-message.success { display: block; background: rgba(22,163,74,0.15); color: #86efac; border: 1px solid rgba(22,163,74,0.3); }
+        .auth-message.info { display: block; background: rgba(79,70,229,0.15); color: #c7d2fe; border: 1px solid rgba(79,70,229,0.3); }
 
-        .auth-message.error { 
-            display: block; 
-            background-color: #fef2f2; 
-            color: #ef4444; 
-            border: 1px solid #fca5a5; 
-        }
-
-        .auth-message.success { 
-            display: block; 
-            background-color: #f0fdf4; 
-            color: #16a34a; 
-            border: 1px solid #86efac; 
-        }
-
-        .form-group { 
-            margin-bottom: 1.25rem; 
-        }
-
-        .form-group label { 
-            display: block; 
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            color: var(--text-main); 
-            margin-bottom: 0.5rem; 
-        }
-
-        .input-wrapper { 
-            position: relative; 
-        }
-
-        .input-wrapper i.fa-envelope, 
-        .input-wrapper i.fa-lock {
-            position: absolute; 
-            left: 1rem; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: var(--text-muted); 
-        }
-
-        .input-wrapper input {
-            width: 100%; 
-            padding: 0.75rem 1rem 0.75rem 2.75rem;
-            border: 1.5px solid var(--border-color); 
-            border-radius: 10px; 
-            font-size: 0.95rem; 
-            outline: none; 
-            background: var(--bg-card);
-            color: var(--text-main);
-        }
-
-        .input-wrapper input:focus { 
-            border-color: var(--primary-purple); 
-            box-shadow: 0 0 0 4px rgba(91, 70, 246, 0.1); 
-        }
-
-        .input-wrapper .toggle-password {
-            position: absolute; 
-            right: 1rem; 
-            left: auto; 
-            top: 50%; 
-            transform: translateY(-50%);
-            cursor: pointer; 
-            color: var(--text-muted); 
-        }
-
-        .input-wrapper .toggle-password:hover { 
-            color: var(--primary-purple); 
-        }
-
-        .auth-footer-text { 
-            text-align: center; 
-            margin-top: 1.5rem; 
-            font-size: 0.875rem; 
-            color: var(--text-muted); 
-            border-top: 1px solid var(--border-color); 
-            padding-top: 1.25rem; 
-        }
-
-        .auth-footer-text a { 
-            color: var(--primary-purple); 
-            font-weight: 700; 
-            text-decoration: none;
-        }
-
-        .site-footer {
-            background-color: var(--footer-bg);
-            color: #ffffff;
-            padding: 20px 8%;
-            margin-top: auto;
-        }
-
-        .footer-bottom {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
             font-size: 0.85rem;
-            color: var(--footer-text);
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+            padding-top: 1.25rem;
+        }
+        .auth-footer a { color: var(--accent); font-weight: 700; text-decoration: none; }
+        .auth-footer a:hover { text-decoration: underline; }
+
+        /* OTP section */
+        .otp-section { display: none; }
+        .otp-section.show { display: block; animation: fadeSlide 0.4s ease; }
+        .otp-input-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 1rem 0 1.5rem;
+        }
+        .otp-digit {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 800;
+            border: 1.5px solid var(--input-border);
+            border-radius: 12px;
+            background: var(--input-bg);
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .otp-digit:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79,70,229,0.15); }
+        .otp-digit.filled { border-color: var(--primary); background: rgba(79,70,229,0.1); }
+
+        .otp-timer {
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        .otp-timer .countdown { color: var(--accent); font-weight: 700; font-size: 1rem; }
+        .otp-timer.expired .countdown { color: var(--danger); }
+        .resend-btn {
+            display: none;
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05);
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+        .resend-btn.show { display: block; animation: fadeSlide 0.3s; }
+        .resend-btn:hover { border-color: var(--accent); background: rgba(6,182,212,0.1); }
+
+        .otp-hint {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-soft);
+            margin-bottom: 1rem;
+            padding: 0.6rem;
+            background: rgba(6,182,212,0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(6,182,212,0.15);
+        }
+        .otp-hint code {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--glass-border);
+            padding: 18px 6%;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: var(--glass-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+            max-width: 340px;
+            animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        .toast.out { animation: toastOut 0.3s forwards; }
+        @keyframes toastIn { from { opacity:0; transform: translateX(120%); } to { opacity:1; transform: translateX(0); } }
+        @keyframes toastOut { to { opacity:0; transform: translateX(120%); } }
+        .toast .ico { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .toast .ico.success { background: rgba(22,163,74,0.2); color: #4ade80; }
+        .toast .ico.error { background: rgba(239,68,68,0.2); color: #fca5a5; }
+        .toast .ico.info { background: rgba(79,70,229,0.2); color: #c7d2fe; }
+        .toast .body .t { font-weight:700; font-size:0.85rem; }
+        .toast .body .s { font-size:0.75rem; color: var(--text-muted); margin-top:2px; }
+
+        @media (max-width: 480px) {
+            .auth-card { padding: 1.75rem 1.5rem; }
+            .otp-digit { width: 40px; height: 48px; font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
 
+    <div class="animated-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
     <!-- Navbar -->
     <header class="navbar">
         <a href="../index.html" class="navbar-brand">
-            <div class="brand-logo-container">
-                <img src="../images/findit.jpeg" alt="FindIt Logo" onerror="this.remove(); document.getElementById('navFallbackIcon').style.display='block';">
-                <i class="fa-solid fa-magnifying-glass-location" id="navFallbackIcon" style="display: none;"></i>
-            </div>
+            <img src="../images/findit.jpeg" alt="FindIt" onerror="this.style.display='none'">
             <span>FindIt</span>
         </a>
         <div class="nav-actions">
-            <a href="Login.html" class="btn btn-outline">Log In</a>
-            <a href="Register.html" class="btn btn-primary">Sign Up</a>
+            <a href="Register.html" class="btn-nav primary"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
         </div>
     </header>
 
-    <!-- Main Login Container -->
+    <!-- Login Card -->
     <main class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <div class="header-logo-wrapper">
-                    <img src="../images/findit.jpeg" alt="FindIt Logo" onerror="this.remove(); document.getElementById('headerFallbackIcon').style.display='block';">
-                    <i class="fa-solid fa-right-to-bracket" id="headerFallbackIcon" style="display: none;"></i>
+                <div class="header-logo">
+                    <img src="../images/findit.jpeg" alt="FindIt" onerror="this.style.display='none'">
                 </div>
                 <h2>Welcome Back</h2>
                 <p>Log in to access your FindIt account</p>
@@ -346,30 +506,95 @@
 
             <div id="authMessage" class="auth-message"></div>
 
-            <form id="loginForm" onsubmit="handleLoginProcess(event)">
-                <div class="form-group">
-                    <label for="email">Campus Email</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-envelope"></i>
-                        <input type="email" id="email" placeholder="vignesh@gmail.com" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" id="password" placeholder="Enter your password" required style="padding-right: 2.75rem;">
-                        <i class="fa-solid fa-eye toggle-password" id="toggleLoginPass" onclick="togglePasswordVisibility()"></i>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-block">
-                    Log In <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="password" onclick="switchTab('password')">
+                    <i class="fa-solid fa-lock"></i> Password
                 </button>
-            </form>
+                <button class="auth-tab" data-tab="otp" onclick="switchTab('otp')">
+                    <i class="fa-solid fa-shield-halved"></i> OTP Login
+                </button>
+            </div>
 
-            <div class="auth-footer-text">
+            <!-- Password Panel -->
+            <div class="form-panel active" id="panel-password">
+                <form id="loginForm" onsubmit="handlePasswordLogin(event)" autocomplete="off">
+                    <div class="form-group">
+                        <label for="email">Campus Email</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="email" name="email" placeholder="yourname@gmail.com" required
+                                   autocomplete="off" autocorrect="off" spellcheck="false">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required
+                                   autocomplete="new-password" style="padding-right: 2.75rem;">
+                            <i class="fa-solid fa-lock"></i>
+                            <i class="fa-solid fa-eye toggle-password" id="togglePass" onclick="togglePasswordVisibility()"></i>
+                        </div>
+                        <div class="strength-bar" id="strengthBar" style="display:none;">
+                            <div class="strength-segment"></div>
+                            <div class="strength-segment"></div>
+                            <div class="strength-segment"></div>
+                            <div class="strength-segment"></div>
+                        </div>
+                        <div class="strength-label" id="strengthLabel" style="display:none;"></div>
+                    </div>
+
+                    <div class="form-row">
+                        <a onclick="handleForgotPassword()">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="btnLogin">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Log In
+                    </button>
+                </form>
+            </div>
+
+            <!-- OTP Panel -->
+            <div class="form-panel" id="panel-otp">
+                <form id="otpForm" onsubmit="handleSendOTP(event)" autocomplete="off">
+                    <div class="form-group">
+                        <label for="otpEmail">Campus Email</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="otpEmail" name="otpEmail" placeholder="yourname@gmail.com" required
+                                   autocomplete="off" autocorrect="off" spellcheck="false">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit" id="btnSendOTP">
+                        <i class="fa-solid fa-paper-plane"></i> Send OTP
+                    </button>
+                </form>
+
+                <!-- OTP Verification -->
+                <div class="otp-section" id="otpVerifySection">
+                    <div class="otp-hint" id="otpHint">An OTP has been sent to your email. Enter it below.</div>
+                    <div class="otp-input-group" id="otpInputs">
+                        <input type="text" class="otp-digit" maxlength="1" autocomplete="one-time-code" data-index="0">
+                        <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="1">
+                        <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="2">
+                        <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="3">
+                        <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="4">
+                        <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="5">
+                    </div>
+                    <div class="otp-timer" id="otpTimer">
+                        OTP expires in <span class="countdown" id="countdown">60</span>s
+                    </div>
+                    <button class="resend-btn" id="resendBtn" onclick="resendOTP()">
+                        <i class="fa-solid fa-rotate-right"></i> Resend OTP
+                    </button>
+                    <button class="btn-submit" onclick="verifyOTP(event)">
+                        <i class="fa-solid fa-check"></i> Verify &amp; Login
+                    </button>
+                </div>
+            </div>
+
+            <div class="auth-footer">
                 Don't have an account? <a href="Register.html">Sign Up Now</a>
             </div>
         </div>
@@ -377,98 +602,260 @@
 
     <!-- Footer -->
     <footer class="site-footer">
-        <div class="footer-bottom">
-            <p>&copy; 2026 FindIt Campus System. All rights reserved.</p>
-        </div>
+        &copy; 2026 FindIt Campus System. All rights reserved.
     </footer>
 
-    <!-- Script Section -->
     <script>
-    const savedTheme = localStorage.getItem('findit_theme') || 'light';
+    /* ---------- Theme ---------- */
+    const savedTheme = localStorage.getItem('findit_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
 
+    /* ---------- Tab switching ---------- */
+    function switchTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+        document.getElementById(`panel-${tab}`).classList.add('active');
+        hideMessage();
+    }
+
+    /* ---------- Password visibility ---------- */
     function togglePasswordVisibility() {
-        const passInput = document.getElementById('password');
-        const toggleIcon = document.getElementById('toggleLoginPass');
-        
-        if (passInput.type === 'password') {
-            passInput.type = 'text';
-            toggleIcon.className = 'fa-solid fa-eye-slash toggle-password';
+        const input = document.getElementById('password');
+        const icon = document.getElementById('togglePass');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'fa-solid fa-eye-slash toggle-password';
         } else {
-            passInput.type = 'password';
-            toggleIcon.className = 'fa-solid fa-eye toggle-password';
+            input.type = 'password';
+            icon.className = 'fa-solid fa-eye toggle-password';
         }
     }
 
-    function handleLoginProcess(e) {
+    /* ---------- Password strength ---------- */
+    document.getElementById('password').addEventListener('input', function() {
+        const val = this.value;
+        const bar = document.getElementById('strengthBar');
+        const label = document.getElementById('strengthLabel');
+        if (val.length === 0) { bar.style.display = 'none'; label.style.display = 'none'; return; }
+        bar.style.display = 'flex'; label.style.display = 'block';
+
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) score++;
+
+        const segments = bar.querySelectorAll('.strength-segment');
+        segments.forEach((s, i) => {
+            s.className = 'strength-segment';
+            if (i < score) {
+                if (score <= 1) s.classList.add('weak');
+                else if (score <= 2) s.classList.add('medium');
+                else s.classList.add('strong');
+            }
+        });
+
+        const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+        const colors = ['var(--danger)', 'var(--danger)', 'var(--warning)', 'var(--accent)', 'var(--success)'];
+        label.textContent = labels[score];
+        label.style.color = colors[score];
+    });
+
+    /* ---------- Messages ---------- */
+    function showMessage(type, text) {
+        const msg = document.getElementById('authMessage');
+        msg.className = `auth-message ${type}`;
+        msg.textContent = text;
+    }
+    function hideMessage() {
+        document.getElementById('authMessage').className = 'auth-message';
+    }
+
+    /* ---------- Toast ---------- */
+    function showToast(type, title, sub) {
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.innerHTML = `<div class="ico ${type}"><i class="fa-solid ${icons[type]}"></i></div><div class="body"><div class="t">${title}</div><div class="s">${sub}</div></div>`;
+        document.body.appendChild(el);
+        setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 3500);
+    }
+
+    /* ---------- Forgot password ---------- */
+    function handleForgotPassword() {
+        const email = document.getElementById('email').value.trim();
+        if (!email) { showMessage('error', 'Please enter your email first.'); return; }
+        showMessage('info', 'Password reset link sent to ' + email + ' (simulated).');
+    }
+
+    /* ---------- Password login ---------- */
+    function handlePasswordLogin(e) {
         e.preventDefault();
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        const pass = document.getElementById('password').value;
 
-        const emailInput = document.getElementById('email').value.trim().toLowerCase();
-        const passInput = document.getElementById('password').value;
-        const authMsg = document.getElementById('authMessage');
-
-        // 1. DIRECT HARDCODED ADMIN CHECK
-        if (emailInput === "admin@findit.com" && passInput === "admin123") {
-            const adminData = {
-                fullname: "System Admin",
-                role: "Admin",
-                dept: "Administration",
-                email: emailInput
-            };
-
+        // Hardcoded admin
+        if (email === 'admin@findit.com' && pass === 'admin123') {
+            const adminData = { fullname: 'System Admin', role: 'Admin', dept: 'Administration', email };
             localStorage.setItem('findit_logged_user', JSON.stringify(adminData));
-
-            authMsg.className = "auth-message success";
-            authMsg.textContent = "Admin Authenticated! Redirecting to Admin Panel...";
-            authMsg.style.display = "block";
-
-            setTimeout(() => {
-                window.location.href = "admin-dashboard.html";
-            }, 800);
+            showMessage('success', 'Admin authenticated! Redirecting...');
+            setTimeout(() => window.location.href = 'Admin-Dashboard.html', 800);
             return;
         }
 
-        // 2. CHECK LOCAL STORAGE FOR REGISTERED USERS
-        const registeredUsers = JSON.parse(localStorage.getItem('findit_users')) || [];
+        const users = JSON.parse(localStorage.getItem('findit_users') || '[]');
+        const user = users.find(u => u.email.toLowerCase() === email && u.password === pass);
 
-        const matchedUser = registeredUsers.find(
-            user => user.email.toLowerCase() === emailInput && user.password === passInput
-        );
-
-        if (matchedUser) {
+        if (user) {
             localStorage.setItem('findit_logged_user', JSON.stringify({
-                fullname: matchedUser.fullname,
-                role: matchedUser.role || 'Student',
-                dept: matchedUser.dept || 'General',
-                email: matchedUser.email
+                fullname: user.fullname, role: user.role || 'Student', dept: user.dept || 'General', email: user.email
             }));
-
-            authMsg.className = "auth-message success";
-            authMsg.textContent = `Welcome back, ${matchedUser.fullname}! Redirecting...`;
-            authMsg.style.display = "block";
-
-            // If user registered as Admin, redirect to Dashboard, else Home Page
-            const isAdminRole = matchedUser.role && matchedUser.role.toLowerCase() === 'admin';
-
-            setTimeout(() => {
-                if (isAdminRole) {
-                    window.location.href = "Admin-Dashboard.html";
-                } else {
-                    window.location.href = "../index.html";
-                }
-            }, 1000);
+            showMessage('success', `Welcome back, ${user.fullname}! Redirecting...`);
+            const isAdmin = (user.role || '').toLowerCase() === 'admin';
+            setTimeout(() => window.location.href = isAdmin ? 'Admin-Dashboard.html' : '../index.html', 800);
         } else {
-            const emailExists = registeredUsers.some(user => user.email.toLowerCase() === emailInput);
-            
-            authMsg.className = "auth-message error";
-            if (emailExists) {
-                authMsg.textContent = "Incorrect password! Please try again.";
-            } else {
-                authMsg.textContent = "No account found with this email! Please register first.";
-            }
-            authMsg.style.display = "block";
+            const exists = users.some(u => u.email.toLowerCase() === email);
+            showMessage('error', exists ? 'Incorrect password. Please try again.' : 'No account found. Please register first.');
         }
     }
+
+    /* ---------- OTP Login ---------- */
+    let generatedOTP = '';
+    let otpTimerInterval = null;
+    let otpExpiry = 0;
+
+    function handleSendOTP(e) {
+        e.preventDefault();
+        const email = document.getElementById('otpEmail').value.trim().toLowerCase();
+        if (!email.endsWith('@gmail.com')) {
+            showMessage('error', 'Please use a valid @gmail.com email.');
+            return;
+        }
+
+        const btn = document.getElementById('btnSendOTP');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+        setTimeout(() => {
+            generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
+            otpExpiry = Date.now() + 60000;
+
+            document.getElementById('otpVerifySection').classList.add('show');
+            document.getElementById('otpHint').innerHTML = `OTP sent to <strong>${email}</strong>. For demo, your code is: <code>${generatedOTP}</code>`;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Resend OTP';
+            showMessage('info', 'OTP sent successfully! Check your email.');
+
+            startOTPTimer();
+            // Focus first digit
+            document.querySelector('.otp-digit[data-index="0"]').focus();
+        }, 1000);
+    }
+
+    function startOTPTimer() {
+        clearInterval(otpTimerInterval);
+        const timerEl = document.getElementById('otpTimer');
+        const countdownEl = document.getElementById('countdown');
+        const resendBtn = document.getElementById('resendBtn');
+        timerEl.classList.remove('expired');
+        resendBtn.classList.remove('show');
+
+        otpTimerInterval = setInterval(() => {
+            const remaining = Math.ceil((otpExpiry - Date.now()) / 1000);
+            if (remaining <= 0) {
+                clearInterval(otpTimerInterval);
+                countdownEl.textContent = '0';
+                timerEl.classList.add('expired');
+                timerEl.innerHTML = '<span style="color:var(--danger);">OTP expired. Please resend.</span>';
+                resendBtn.classList.add('show');
+                generatedOTP = '';
+            } else {
+                countdownEl.textContent = remaining;
+            }
+        }, 1000);
+    }
+
+    function resendOTP() {
+        const email = document.getElementById('otpEmail').value.trim();
+        generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
+        otpExpiry = Date.now() + 60000;
+        document.getElementById('otpHint').innerHTML = `New OTP sent to <strong>${email}</strong>. For demo, your code is: <code>${generatedOTP}</code>`;
+        document.getElementById('otpTimer').innerHTML = 'OTP expires in <span class="countdown" id="countdown">60</span>s';
+        startOTPTimer();
+        showToast('info', 'OTP Resent', 'A new code has been sent to your email.');
+        // Clear inputs
+        document.querySelectorAll('.otp-digit').forEach(d => { d.value = ''; d.classList.remove('filled'); });
+        document.querySelector('.otp-digit[data-index="0"]').focus();
+    }
+
+    function verifyOTP(e) {
+        e.preventDefault();
+        const entered = Array.from(document.querySelectorAll('.otp-digit')).map(d => d.value).join('');
+
+        if (!generatedOTP) {
+            showMessage('error', 'OTP expired. Please resend.');
+            return;
+        }
+        if (entered.length < 6) {
+            showMessage('error', 'Please enter all 6 digits.');
+            return;
+        }
+        if (entered !== generatedOTP) {
+            showMessage('error', 'Wrong OTP. Please try again.');
+            document.querySelectorAll('.otp-digit').forEach(d => {
+                d.style.borderColor = 'var(--danger)';
+                setTimeout(() => d.style.borderColor = '', 1000);
+            });
+            return;
+        }
+
+        // Success — find user or create guest session
+        const email = document.getElementById('otpEmail').value.trim().toLowerCase();
+        const users = JSON.parse(localStorage.getItem('findit_users') || '[]');
+        const user = users.find(u => u.email.toLowerCase() === email);
+
+        if (user) {
+            localStorage.setItem('findit_logged_user', JSON.stringify({
+                fullname: user.fullname, role: user.role || 'Student', dept: user.dept || 'General', email: user.email
+            }));
+        } else {
+            // Guest login via OTP
+            localStorage.setItem('findit_logged_user', JSON.stringify({
+                fullname: email.split('@')[0], role: 'Student', dept: 'General', email
+            }));
+        }
+
+        showMessage('success', 'OTP verified! Redirecting...');
+        showToast('success', 'Login Successful', 'Welcome to FindIt!');
+        setTimeout(() => window.location.href = '../index.html', 800);
+    }
+
+    /* ---------- OTP input behavior ---------- */
+    document.querySelectorAll('.otp-digit').forEach((input, idx, arr) => {
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value) {
+                this.classList.add('filled');
+                if (idx < arr.length - 1) arr[idx + 1].focus();
+            } else {
+                this.classList.remove('filled');
+            }
+        });
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !this.value && idx > 0) arr[idx - 1].focus();
+            if (e.key === 'ArrowLeft' && idx > 0) arr[idx - 1].focus();
+            if (e.key === 'ArrowRight' && idx < arr.length - 1) arr[idx + 1].focus();
+        });
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const data = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+            data.split('').forEach((char, i) => {
+                if (arr[i]) { arr[i].value = char; arr[i].classList.add('filled'); }
+            });
+            if (data.length === 6) arr[5].focus();
+        });
+    });
     </script>
 </body>
 </html>

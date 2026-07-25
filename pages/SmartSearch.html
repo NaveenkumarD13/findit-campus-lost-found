@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindIt — Smart Object Search</title>
+
+    <link rel="icon" type="image/jpeg" href="../images/findit.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-glow: rgba(79, 70, 229, 0.35);
+            --accent: #06b6d4;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-body: #f6f7fb;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-soft: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-soft: #eef2f7;
+            --card-shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06);
+        }
+        [data-theme="dark"] {
+            --bg-body: #0a0f1e;
+            --bg-card: #131a2e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-soft: #64748b;
+            --border-color: #243049;
+            --border-soft: #1e293f;
+            --card-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.4s, color 0.4s; }
+
+        .ambient-bg { position: fixed; inset: 0; z-index: -2; background-image: radial-gradient(circle at center, var(--border-soft) 1px, transparent 1.5px); background-size: 28px 28px; pointer-events: none; }
+
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 6%; background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 1.35rem; font-weight: 800; color: var(--primary); }
+        .navbar-brand img { width: 38px; height: 38px; border-radius: 10px; object-fit: contain; background: #fff; padding: 2px; border: 1px solid var(--border-color); }
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .btn { padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 0.88rem; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); transition: all 0.2s; }
+        .btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(79,70,229,0.06); }
+        .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 6px 16px var(--primary-glow); }
+        .btn-primary:hover { background: var(--primary-hover); color: #fff; }
+        .btn-success { background: var(--success); color: #fff; border-color: var(--success); }
+        .btn-success:hover { background: #15803d; color: #fff; }
+        .btn-theme-toggle { background: none; border: 1px solid var(--border-color); font-size: 1.1rem; cursor: pointer; color: var(--text-main); padding: 9px; border-radius: 10px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .btn-theme-toggle:hover { border-color: var(--primary); color: var(--primary); transform: rotate(20deg); }
+
+        .search-container { max-width: 1100px; margin: 0 auto; padding: 2.5rem 6% 1rem; width: 100%; }
+        .search-header { text-align: center; margin-bottom: 2rem; }
+        .search-header h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .search-header h1 .accent { background: linear-gradient(120deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .search-header p { color: var(--text-muted); font-size: 1rem; }
+
+        .search-box-large { display: flex; gap: 12px; max-width: 600px; margin: 0 auto 1.5rem; }
+        .search-box-large .input-wrap { position: relative; flex: 1; }
+        .search-box-large .input-wrap > i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-soft); font-size: 1.1rem; }
+        .search-box-large input { width: 100%; padding: 14px 20px 14px 48px; border-radius: 14px; border: 1.5px solid var(--border-color); background: var(--bg-card); color: var(--text-main); outline: none; font-size: 1rem; transition: all 0.2s; }
+        .search-box-large input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79,70,229,0.12); }
+        .search-box-large button { padding: 14px 24px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-weight: 700; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 6px 16px var(--primary-glow); transition: all 0.2s; }
+        .search-box-large button:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+        .quick-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .quick-tag { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-muted); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .quick-tag:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+
+        .results-section { max-width: 1100px; margin: 0 auto; padding: 1rem 6% 2rem; width: 100%; flex: 1; }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .results-header h3 { font-size: 1.2rem; font-weight: 800; }
+        .results-header p { font-size: 0.85rem; color: var(--text-muted); }
+
+        .skeleton-grid, .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+        .skeleton-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; }
+        .skeleton-img { width: 100%; height: 160px; background: linear-gradient(90deg, var(--border-soft) 25%, var(--border-color) 50%, var(--border-soft) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        .skeleton-body { padding: 12px; }
+        .skeleton-line { height: 10px; border-radius: 4px; background: linear-gradient(90deg, var(--border-soft) 25%, var(--border-color) 50%, var(--border-soft) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin-bottom: 6px; }
+        .skeleton-line.short { width: 60%; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .image-card { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.3s; position: relative; }
+        .image-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(79,70,229,0.15); border-color: var(--primary); }
+        .image-card.selected { border-color: var(--success); box-shadow: 0 0 0 3px rgba(22,163,74,0.2); }
+        .image-card .img-wrap { width: 100%; height: 160px; background: var(--border-soft); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .image-card .img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+        .image-card:hover .img-wrap img { transform: scale(1.08); }
+        .image-card .img-wrap i { font-size: 2.5rem; color: var(--text-soft); }
+        .image-card .check-badge { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: #fff; display: none; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .image-card.selected .check-badge { display: flex; }
+        .image-card .body { padding: 12px; }
+        .image-card .body h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 3px; }
+        .image-card .body .cat { font-size: 0.74rem; color: var(--text-muted); }
+
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 3rem; color: var(--text-soft); margin-bottom: 14px; }
+
+        /* Selection panel */
+        .selection-panel { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 90; background: var(--bg-card); border-top: 1px solid var(--border-color); padding: 1.25rem 6%; box-shadow: 0 -8px 24px rgba(15,23,42,0.1); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+        .selection-panel.show { display: flex; transform: translateY(0); align-items: center; justify-content: space-between; gap: 1rem; max-width: 1100px; margin: 0 auto; left: 50%; transform: translateX(-50%) translateY(0); border: 1px solid var(--border-color); border-bottom: none; border-radius: 18px 18px 0 0; bottom: 0; width: 92%; }
+        .selection-info { display: flex; align-items: center; gap: 14px; }
+        .selection-info img { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border-color); }
+        .selection-info .icon-fallback { width: 56px; height: 56px; border-radius: 12px; background: var(--border-soft); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--primary); }
+        .selection-info .meta h4 { font-size: 0.95rem; font-weight: 700; }
+        .selection-info .meta p { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Match modal */
+        .modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 1.5rem; }
+        .modal-overlay.show { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-card { width: 100%; max-width: 560px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 2rem; box-shadow: 0 24px 60px rgba(0,0,0,0.3); position: relative; overflow: hidden; animation: modalIn 0.4s cubic-bezier(0.16,1,0.3,1); }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--success), var(--accent)); }
+        .modal-icon { width: 60px; height: 60px; border-radius: 16px; background: rgba(22,163,74,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.6rem; color: var(--success); }
+        .modal-title { text-align: center; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .modal-sub { text-align: center; color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem; }
+        .match-comparison { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+        .match-item { text-align: center; }
+        .match-item .img-circle { width: 100px; height: 100px; border-radius: 16px; object-fit: cover; margin: 0 auto 8px; border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary); background: var(--border-soft); }
+        .match-item .img-circle img { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; }
+        .match-item h5 { font-size: 0.85rem; font-weight: 700; }
+        .match-item p { font-size: 0.74rem; color: var(--text-muted); }
+        .match-vs { font-size: 1.5rem; color: var(--text-soft); }
+        .confidence-bar { background: var(--border-soft); border-radius: 999px; height: 10px; overflow: hidden; margin: 0.5rem 0 1.5rem; }
+        .confidence-fill { height: 100%; background: linear-gradient(90deg, var(--success), var(--accent)); border-radius: 999px; transition: width 1s ease; }
+        .confidence-label { text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--success); margin-bottom: 0.5rem; }
+        .owner-details { background: var(--border-soft); border-radius: 14px; padding: 1rem; margin-bottom: 1.5rem; }
+        .owner-details h5 { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.04em; }
+        .owner-row { display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem; font-size: 0.88rem; }
+        .owner-row i { width: 32px; height: 32px; border-radius: 8px; background: var(--bg-card); display: flex; align-items: center; justify-content: center; color: var(--primary); }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-actions .btn { flex: 1; justify-content: center; padding: 0.8rem; }
+
+        .toast { position: fixed; top: 80px; right: 24px; z-index: 200; display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; box-shadow: 0 12px 32px rgba(15,23,42,0.16); max-width: 340px; animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1); }
+        .toast.out { animation: toastOut 0.3s forwards; }
+        @keyframes toastIn { from { opacity:0; transform: translateX(120%); } to { opacity:1; transform: translateX(0); } }
+        @keyframes toastOut { to { opacity:0; transform: translateX(120%); } }
+        .toast .ico { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .toast .ico.success { background: rgba(22,163,74,0.14); color: var(--success); }
+        .toast .ico.error { background: rgba(239,68,68,0.14); color: var(--danger); }
+        .toast .ico.info { background: rgba(79,70,229,0.14); color: var(--primary); }
+        .toast .body .t { font-weight:700; font-size:0.85rem; color: var(--text-main); }
+        .toast .body .s { font-size:0.75rem; color: var(--text-muted); margin-top:2px; }
+
+        .site-footer { background: #0a0f1e; color: #94a3b8; padding: 18px 6%; margin-top: auto; text-align: center; font-size: 0.82rem; }
+
+        @media (max-width: 600px) {
+            .match-comparison { grid-template-columns: 1fr; }
+            .match-vs { display: none; }
+            .selection-panel.show { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg"></div>
+
+    <header class="navbar">
+        <a href="../index.html" class="navbar-brand">
+            <img src="../images/findit.jpeg" alt="FindIt" onerror="this.style.display='none'">
+            <span>FindIt</span>
+        </a>
+        <div class="nav-actions">
+            <button onclick="toggleTheme()" class="btn-theme-toggle" id="themeToggleBtn"><i id="themeToggleIcon" class="fa-solid fa-moon"></i></button>
+            <a href="../index.html" class="btn"><i class="fa-solid fa-house"></i> Home</a>
+        </div>
+    </header>
+
+    <section class="search-container">
+        <div class="search-header">
+            <h1>Smart <span class="accent">Object Detection</span></h1>
+            <p>Search for an item and we'll find matching images from the web</p>
+        </div>
+        <div class="search-box-large">
+            <div class="input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Try: Wallet, Bottle, Laptop, Phone, Keys..." onkeydown="if(event.key==='Enter')performSearch()">
+            </div>
+            <button onclick="performSearch()"><i class="fa-solid fa-bolt"></i> Search</button>
+        </div>
+        <div class="quick-tags">
+            <button class="quick-tag" onclick="quickSearch('Wallet')"><i class="fa-solid fa-wallet"></i> Wallet</button>
+            <button class="quick-tag" onclick="quickSearch('Bottle')"><i class="fa-solid fa-bottle-water"></i> Bottle</button>
+            <button class="quick-tag" onclick="quickSearch('Laptop')"><i class="fa-solid fa-laptop"></i> Laptop</button>
+            <button class="quick-tag" onclick="quickSearch('ID Card')"><i class="fa-solid fa-id-card"></i> ID Card</button>
+            <button class="quick-tag" onclick="quickSearch('Phone')"><i class="fa-solid fa-mobile-screen"></i> Phone</button>
+            <button class="quick-tag" onclick="quickSearch('Bag')"><i class="fa-solid fa-bag-shopping"></i> Bag</button>
+            <button class="quick-tag" onclick="quickSearch('Watch')"><i class="fa-solid fa-clock"></i> Watch</button>
+            <button class="quick-tag" onclick="quickSearch('Keys')"><i class="fa-solid fa-key"></i> Keys</button>
+            <button class="quick-tag" onclick="quickSearch('Earbuds')"><i class="fa-solid fa-headphones"></i> Earbuds</button>
+        </div>
+    </section>
+
+    <section class="results-section">
+        <div class="results-header">
+            <div>
+                <h3 id="resultsTitle">Search Results</h3>
+                <p id="resultsCount">Enter an item name to begin</p>
+            </div>
+        </div>
+        <div class="image-grid" id="imageGrid">
+            <div class="empty-state">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <p>Start by searching for an item above</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Selection panel -->
+    <div class="selection-panel" id="selectionPanel">
+        <div class="selection-info">
+            <img id="selImg" src="" alt="" style="display:none;">
+            <div class="icon-fallback" id="selIcon"><i class="fa-solid fa-box"></i></div>
+            <div class="meta">
+                <h4 id="selName">No item selected</h4>
+                <p id="selCat">Select an image to match</p>
+            </div>
+        </div>
+        <button class="btn btn-success" onclick="runMatchEngine()"><i class="fa-solid fa-link"></i> Find Matches</button>
+    </div>
+
+    <!-- Match modal -->
+    <div class="modal-overlay" id="matchModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fa-solid fa-handshake"></i></div>
+            <div class="modal-title">Possible Match Found!</div>
+            <div class="modal-sub" id="matchSub">We found a potential match in our lost &amp; found database</div>
+            <div class="match-comparison" id="matchComparison"></div>
+            <div class="confidence-label" id="confidenceLabel">0% Match Confidence</div>
+            <div class="confidence-bar"><div class="confidence-fill" id="confidenceFill" style="width:0%"></div></div>
+            <div class="owner-details" id="ownerDetails" style="display:none;">
+                <h5>Owner Contact Details</h5>
+                <div id="ownerInfo"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeMatchModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+                <button class="btn btn-success" id="btnContactOwner" onclick="showOwnerDetails()" style="display:none;"><i class="fa-solid fa-user"></i> Contact Owner</button>
+                <a href="#" class="btn btn-primary" id="btnCall" style="display:none;"><i class="fa-solid fa-phone"></i> Call Owner</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">&copy; 2026 FindIt Campus System. All rights reserved.</footer>
+
+    <script>
+    const savedTheme = localStorage.getItem('findit_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('findit_theme', next);
+        document.getElementById('themeToggleIcon').className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+    document.getElementById('themeToggleIcon').className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+
+    // Curated Pexels image database by category
+    const imageDB = {
+        'wallet': [
+            { url: 'https://images.pexels.com/photos/2079246/pexels-photo-2079246.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Brown Leather Wallet', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Black Bifold Wallet', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/2079249/pexels-photo-2079249.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Card Holder Wallet', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/4498138/pexels-photo-4498138.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Minimalist Wallet', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/4498152/pexels-photo-4498152.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Leather Coin Wallet', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/6476562/pexels-photo-6476562.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Designer Wallet', cat: 'Personal Belongings' },
+        ],
+        'bottle': [
+            { url: 'https://images.pexels.com/photos/1188649/pexels-photo-1188649.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Steel Water Bottle', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Plastic Bottle', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/547067/pexels-photo-547067.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Sports Bottle', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/1188649/pexels-photo-1188649.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Insulated Bottle', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/5711327/pexels-photo-5711327.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Glass Bottle', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/2982519/pexels-photo-2982519.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Thermal Flask', cat: 'Personal Belongings' },
+        ],
+        'laptop': [
+            { url: 'https://images.pexels.com/photos/812264/pexels-photo-812264.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Dell Laptop', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/1029757/pexels-photo-1029757.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'HP Laptop', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=400', name: 'MacBook Pro', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/459653/pexels-photo-459653.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Lenovo Laptop', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/459654/pexels-photo-459654.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Asus Laptop', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/7974/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=400', name: 'Acer Laptop', cat: 'Electronics' },
+        ],
+        'id card': [
+            { url: 'https://images.pexels.com/photos/8438922/pexels-photo-8438922.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Student ID Card', cat: 'ID Card' },
+            { url: 'https://images.pexels.com/photos/8438923/pexels-photo-8438923.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Employee ID Badge', cat: 'ID Card' },
+            { url: 'https://images.pexels.com/photos/6857363/pexels-photo-6857363.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Lanyard with ID', cat: 'ID Card' },
+            { url: 'https://images.pexels.com/photos/3760930/pexels-photo-3760930.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Access Card', cat: 'ID Card' },
+            { url: 'https://images.pexels.com/photos/5083407/pexels-photo-5083407.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Identity Document', cat: 'ID Card' },
+            { url: 'https://images.pexels.com/photos/5668773/pexels-photo-5668773.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Smart Card', cat: 'ID Card' },
+        ],
+        'phone': [
+            { url: 'https://images.pexels.com/photos/1647976/pexels-photo-1647976.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Samsung Phone', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'iPhone', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Android Phone', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/621102/pexels-photo-621102.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Smartphone', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/1841841/pexels-photo-1841841.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Redmi Phone', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/4046718/pexels-photo-4046718.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'OnePlus Phone', cat: 'Electronics' },
+        ],
+        'bag': [
+            { url: 'https://images.pexels.com/photos/2905238/pexels-photo-2905238.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Backpack', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/1205199/pexels-photo-1205199.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'College Bag', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Handbag', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/2422290/pexels-photo-2422290.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Laptop Bag', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/1170207/pexels-photo-1170207.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Sling Bag', cat: 'Personal Belongings' },
+            { url: 'https://images.pexels.com/photos/1148957/pexels-photo-1148957.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Travel Bag', cat: 'Personal Belongings' },
+        ],
+        'watch': [
+            { url: 'https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Wrist Watch', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Analog Watch', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Smart Watch', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/125779/pexels-photo-125779.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Digital Watch', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/364822/rolex-wrist-watch-timer-time-364822.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Luxury Watch', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/9978722/pexels-photo-9978722.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Sport Watch', cat: 'Electronics' },
+        ],
+        'keys': [
+            { url: 'https://images.pexels.com/photos/210886/pexels-photo-210886.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Key Ring', cat: 'Keys' },
+            { url: 'https://images.pexels.com/photos/209610/pexels-photo-209610.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'House Keys', cat: 'Keys' },
+            { url: 'https://images.pexels.com/photos/3786969/pexels-photo-3786969.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Car Keys', cat: 'Keys' },
+            { url: 'https://images.pexels.com/photos/264819/pexels-photo-264819.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Key Chain', cat: 'Keys' },
+            { url: 'https://images.pexels.com/photos/264842/pexels-photo-264842.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Key Set', cat: 'Keys' },
+            { url: 'https://images.pexels.com/photos/695025/pexels-photo-695025.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Office Keys', cat: 'Keys' },
+        ],
+        'earbuds': [
+            { url: 'https://images.pexels.com/photos/3780681/pexels-photo-3780681.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Wireless Earbuds', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/3780682/pexels-photo-3780682.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'AirPods Case', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/4110371/pexels-photo-4110371.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Bluetooth Earbuds', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/3780683/pexels-photo-3780683.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Boat Earbuds', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/3323432/pexels-photo-3323432.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'Neckband Earbuds', cat: 'Electronics' },
+            { url: 'https://images.pexels.com/photos/3933251/pexels-photo-3933251.jpeg?auto=compress&cs=tinysrgb&w=400', name: 'TWS Earbuds', cat: 'Electronics' },
+        ],
+    };
+
+    const categoryIcons = {
+        'wallet': 'fa-wallet', 'bottle': 'fa-bottle-water', 'laptop': 'fa-laptop',
+        'id card': 'fa-id-card', 'phone': 'fa-mobile-screen', 'bag': 'fa-bag-shopping',
+        'watch': 'fa-clock', 'keys': 'fa-key', 'earbuds': 'fa-headphones',
+    };
+
+    let selectedItem = null;
+
+    function quickSearch(term) {
+        document.getElementById('searchInput').value = term;
+        performSearch();
+    }
+
+    function performSearch() {
+        const query = document.getElementById('searchInput').value.trim().toLowerCase();
+        if (!query) { showToast('info', 'Empty Search', 'Please enter an item name.'); return; }
+
+        // Find matching category
+        let matchedKey = null;
+        for (const key in imageDB) {
+            if (query.includes(key) || key.includes(query)) { matchedKey = key; break; }
+        }
+
+        const grid = document.getElementById('imageGrid');
+        document.getElementById('resultsTitle').textContent = 'Searching...';
+        document.getElementById('resultsCount').textContent = 'Looking for "' + query + '" across the web...';
+
+        // Show skeleton loaders
+        let skeletonHTML = '';
+        for (let i = 0; i < 6; i++) {
+            skeletonHTML += `<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>`;
+        }
+        grid.innerHTML = skeletonHTML;
+
+        // Simulate search delay
+        setTimeout(() => {
+            let results = [];
+            if (matchedKey && imageDB[matchedKey]) {
+                results = imageDB[matchedKey];
+            } else {
+                // Fallback: show generic items
+                results = [
+                    { url: '', name: query.charAt(0).toUpperCase() + query.slice(1), cat: 'Others', icon: 'fa-box' },
+                    { url: '', name: 'Related ' + query, cat: 'Others', icon: 'fa-box' },
+                    { url: '', name: query + ' (variant)', cat: 'Others', icon: 'fa-box' },
+                ];
+            }
+
+            document.getElementById('resultsTitle').textContent = 'Results for "' + query + '"';
+            document.getElementById('resultsCount').textContent = results.length + ' images found';
+
+            grid.innerHTML = results.map((item, idx) => {
+                const icon = categoryIcons[matchedKey] || item.icon || 'fa-box';
+                const imgHTML = item.url
+                    ? `<img src="${item.url}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback-icon').style.display='flex'">`
+                    : '';
+                return `
+                    <div class="image-card" onclick="selectItem(${idx}, '${matchedKey || ''}')">
+                        <div class="img-wrap">
+                            ${imgHTML}
+                            <div class="fallback-icon" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:2.5rem;color:var(--text-soft);"><i class="fa-solid ${icon}"></i></div>
+                            <div class="check-badge"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <div class="body">
+                            <h4>${item.name}</h4>
+                            <p class="cat"><i class="fa-solid fa-tag"></i> ${item.cat}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Store results for selection
+            window._searchResults = results;
+            window._matchedKey = matchedKey;
+        }, 1200);
+    }
+
+    function selectItem(idx, key) {
+        document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.image-card')[idx].classList.add('selected');
+
+        const item = window._searchResults[idx];
+        selectedItem = { ...item, key };
+
+        const panel = document.getElementById('selectionPanel');
+        panel.classList.add('show');
+
+        document.getElementById('selName').textContent = item.name;
+        document.getElementById('selCat').textContent = item.cat;
+
+        const img = document.getElementById('selImg');
+        const icon = document.getElementById('selIcon');
+        if (item.url) {
+            img.src = item.url; img.style.display = 'block';
+            icon.style.display = 'none';
+        } else {
+            img.style.display = 'none';
+            icon.style.display = 'flex';
+            icon.innerHTML = `<i class="fa-solid ${categoryIcons[key] || 'fa-box'}"></i>`;
+        }
+
+        showToast('success', 'Image Selected', item.name);
+    }
+
+    // Matching engine
+    function runMatchEngine() {
+        if (!selectedItem) { showToast('info', 'No Selection', 'Please select an image first.'); return; }
+
+        const allReports = JSON.parse(localStorage.getItem('findit_all_reports') || '[]');
+        const lostReports = allReports.filter(r => r.type === 'Lost');
+
+        // Find potential matches by category similarity
+        const matches = [];
+        lostReports.forEach(report => {
+            const rCat = (report.category || '').toLowerCase();
+            const sCat = (selectedItem.cat || '').toLowerCase();
+            const rName = (report.itemName || '').toLowerCase();
+            const sName = (selectedItem.name || '').toLowerCase();
+
+            let confidence = 0;
+            if (rCat === sCat) confidence += 50;
+            if (rName.includes(sName) || sName.includes(rName)) confidence += 30;
+            if (rCat.includes(sCat) || sCat.includes(rCat)) confidence += 20;
+            // Random factor for demo
+            confidence += Math.floor(Math.random() * 15);
+
+            if (confidence > 40) matches.push({ report, confidence: Math.min(confidence, 99) });
+        });
+
+        if (matches.length === 0) {
+            showToast('info', 'No Matches', 'No potential matches found in the database yet.');
+            return;
+        }
+
+        // Sort by confidence
+        matches.sort((a, b) => b.confidence - a.confidence);
+        showMatchModal(matches[0]);
+    }
+
+    function showMatchModal(match) {
+        const modal = document.getElementById('matchModal');
+        modal.classList.add('show');
+
+        const report = match.report;
+        const icon = report.icon || 'fa-box';
+
+        document.getElementById('matchSub').textContent = `${match.confidence}% confidence match with a lost item report`;
+
+        document.getElementById('matchComparison').innerHTML = `
+            <div class="match-item">
+                <div class="img-circle">${selectedItem.url ? `<img src="${selectedItem.url}" alt="">` : `<i class="fa-solid ${categoryIcons[selectedItem.key] || 'fa-box'}"></i>`}</div>
+                <h5>${selectedItem.name}</h5>
+                <p>Selected Image</p>
+            </div>
+            <div class="match-vs"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+            <div class="match-item">
+                <div class="img-circle">${report.imageURL ? `<img src="${report.imageURL}" alt="">` : `<i class="fa-solid ${icon}"></i>`}</div>
+                <h5>${report.itemName}</h5>
+                <p>Lost Report</p>
+            </div>
+        `;
+
+        // Animate confidence
+        setTimeout(() => {
+            document.getElementById('confidenceFill').style.width = match.confidence + '%';
+            document.getElementById('confidenceLabel').textContent = match.confidence + '% Match Confidence';
+        }, 200);
+
+        // Store owner info
+        window._matchedReport = report;
+        document.getElementById('btnContactOwner').style.display = 'inline-flex';
+        document.getElementById('ownerDetails').style.display = 'none';
+        document.getElementById('btnCall').style.display = 'none';
+    }
+
+    function showOwnerDetails() {
+        const report = window._matchedReport;
+        if (!report) return;
+
+        document.getElementById('ownerDetails').style.display = 'block';
+        document.getElementById('ownerInfo').innerHTML = `
+            <div class="owner-row"><i class="fa-solid fa-user"></i> <strong>${report.ownerName || report.userName || 'Unknown'}</strong></div>
+            <div class="owner-row"><i class="fa-solid fa-phone"></i> ${report.contact || 'Not provided'}</div>
+            <div class="owner-row"><i class="fa-solid fa-envelope"></i> ${report.userEmail || 'Not provided'}</div>
+            <div class="owner-row"><i class="fa-solid fa-location-dot"></i> ${report.location || 'Unknown'}</div>
+        `;
+
+        document.getElementById('btnContactOwner').style.display = 'none';
+        const callBtn = document.getElementById('btnCall');
+        callBtn.style.display = 'inline-flex';
+        callBtn.href = 'tel:' + (report.contact || '');
+
+        showToast('success', 'Owner Revealed', 'You can now contact the owner directly.');
+    }
+
+    function closeMatchModal() {
+        document.getElementById('matchModal').classList.remove('show');
+    }
+
+    function showToast(type, title, sub) {
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.innerHTML = `<div class="ico ${type}"><i class="fa-solid ${icons[type]}"></i></div><div class="body"><div class="t">${title}</div><div class="s">${sub}</div></div>`;
+        document.body.appendChild(el);
+        setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 3500);
+    }
+    </script>
+</body>
+</html>
