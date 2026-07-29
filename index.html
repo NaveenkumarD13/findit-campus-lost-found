@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FindIt — Campus Lost & Found</title>
+    <link rel="icon" href="./images/findit.jpeg">
 
     <link rel="icon" type="image/jpeg" href="images/findit.jpeg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -37,7 +38,6 @@
             --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
             --card-hover-shadow: 0 4px 8px rgba(79, 70, 229, 0.08), 0 24px 48px rgba(79, 70, 229, 0.18);
             --dot-color: rgba(79, 70, 229, 0.10);
-            --grid-line: rgba(15, 23, 42, 0.04);
         }
 
         [data-theme="dark"] {
@@ -53,7 +53,6 @@
             --card-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
             --card-hover-shadow: 0 4px 8px rgba(79, 70, 229, 0.15), 0 24px 56px rgba(79, 70, 229, 0.28);
             --dot-color: rgba(129, 140, 248, 0.14);
-            --grid-line: rgba(255, 255, 255, 0.04);
         }
 
         * {
@@ -75,17 +74,13 @@
             transition: background-color 0.4s ease, color 0.4s ease;
         }
 
-        /* ==========================================================================
-           AMBIENT BACKGROUND — DOT GRID + GLOW
-           ========================================================================== */
+        /* Ambient Background */
         .ambient-bg {
             position: fixed;
             inset: 0;
             z-index: -2;
-            background-image:
-                radial-gradient(circle at center, var(--dot-color) 1px, transparent 1.5px);
+            background-image: radial-gradient(circle at center, var(--dot-color) 1px, transparent 1.5px);
             background-size: 28px 28px;
-            background-position: 0 0;
             pointer-events: none;
         }
         .ambient-glow {
@@ -97,15 +92,8 @@
                 radial-gradient(600px circle at 12% 8%, rgba(79, 70, 229, 0.10), transparent 60%),
                 radial-gradient(700px circle at 88% 18%, rgba(6, 182, 212, 0.08), transparent 60%);
         }
-        [data-theme="dark"] .ambient-glow {
-            background:
-                radial-gradient(700px circle at 12% 8%, rgba(79, 70, 229, 0.22), transparent 60%),
-                radial-gradient(800px circle at 88% 18%, rgba(6, 182, 212, 0.14), transparent 60%);
-        }
 
-        /* ==========================================================================
-           NAVBAR
-           ========================================================================== */
+        /* Navbar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -139,9 +127,7 @@
             background-color: #ffffff;
             padding: 2px;
             border: 1px solid var(--border-color);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .navbar-brand:hover img { transform: rotate(-8deg) scale(1.08); }
 
         .navbar-nav {
             display: flex;
@@ -154,28 +140,11 @@
             color: var(--text-muted);
             font-weight: 500;
             font-size: 0.92rem;
-            position: relative;
             transition: color 0.2s ease;
         }
-        .navbar-nav a::after {
-            content: '';
-            position: absolute;
-            width: 0%;
-            height: 2px;
-            bottom: -6px;
-            left: 0;
-            background-color: var(--primary);
-            border-radius: 2px;
-            transition: width 0.3s ease;
-        }
         .navbar-nav a:hover { color: var(--primary); }
-        .navbar-nav a:hover::after { width: 100%; }
 
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .nav-actions { display: flex; align-items: center; gap: 14px; }
 
         .btn {
             padding: 10px 20px;
@@ -188,9 +157,7 @@
             align-items: center;
             gap: 8px;
             border: none;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
         .btn-outline {
             border: 1px solid var(--border-color);
@@ -212,15 +179,6 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 24px var(--primary-glow);
         }
-        .btn .ripple {
-            position: absolute;
-            border-radius: 50%;
-            transform: scale(0);
-            background: rgba(255, 255, 255, 0.5);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-        }
-        @keyframes ripple { to { transform: scale(4); opacity: 0; } }
 
         .btn-theme-toggle {
             background: none;
@@ -228,26 +186,17 @@
             font-size: 1.1rem;
             cursor: pointer;
             color: var(--text-main);
-            padding: 9px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
             transition: all 0.3s ease;
         }
-        .btn-theme-toggle:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: rotate(20deg) scale(1.05);
-        }
 
-        /* ==========================================================================
-           HERO
-           ========================================================================== */
+        /* Hero */
         .hero {
-            position: relative;
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
             align-items: center;
@@ -268,22 +217,8 @@
             color: var(--primary);
             font-size: 0.78rem;
             font-weight: 700;
-            letter-spacing: 0.02em;
             margin-bottom: 22px;
             border: 1px solid rgba(79, 70, 229, 0.18);
-        }
-        .hero-eyebrow .pulse-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 0 0 var(--primary-glow);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.5); }
-            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
         }
 
         .hero-title {
@@ -299,15 +234,6 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .typewriter-text {
-            color: var(--primary);
-            border-right: 3px solid var(--primary);
-            animation: blink 0.75s step-end infinite;
-        }
-        @keyframes blink {
-            from, to { border-color: transparent; }
-            50% { border-color: var(--primary); }
-        }
 
         .hero-subtitle {
             margin: 22px 0 32px;
@@ -317,35 +243,21 @@
             max-width: 520px;
         }
 
-        .hero-btns {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
 
-        /* Live dashboard preview */
+        /* Dashboard Preview */
         .dashboard-preview {
-            position: relative;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 22px;
             padding: 18px;
             box-shadow: var(--card-hover-shadow);
-            overflow: hidden;
-        }
-        .dashboard-preview::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.06), rgba(6, 182, 212, 0.04));
-            pointer-events: none;
         }
         .dp-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
-            position: relative;
         }
         .dp-title {
             display: flex;
@@ -360,29 +272,6 @@
             height: 8px;
             border-radius: 50%;
             background: var(--success);
-            box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5);
-            animation: pulse-green 2s infinite;
-        }
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
-            70% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
-        }
-        .dp-chips {
-            display: flex;
-            gap: 6px;
-        }
-        .dp-chip {
-            font-size: 0.68rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 999px;
-            background: var(--border-soft);
-            color: var(--text-muted);
-        }
-        .dp-chip.active {
-            background: rgba(79, 70, 229, 0.12);
-            color: var(--primary);
         }
 
         .dp-stats {
@@ -390,7 +279,6 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-bottom: 16px;
-            position: relative;
         }
         .dp-stat {
             background: var(--bg-elevated);
@@ -400,27 +288,25 @@
             text-align: center;
         }
         .dp-stat .v {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: var(--primary);
             line-height: 1;
         }
         .dp-stat .l {
-            font-size: 0.66rem;
+            font-size: 0.65rem;
             color: var(--text-soft);
             margin-top: 4px;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
             font-weight: 600;
         }
 
         .dp-feed {
-            position: relative;
             display: flex;
             flex-direction: column;
             gap: 8px;
             max-height: 220px;
-            overflow: hidden;
+            overflow-y: auto;
         }
         .dp-feed-item {
             display: flex;
@@ -431,11 +317,6 @@
             border: 1px solid var(--border-soft);
             border-radius: 10px;
             font-size: 0.82rem;
-            animation: slideInFeed 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes slideInFeed {
-            from { opacity: 0; transform: translateY(-12px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .dp-feed-item .ico {
             width: 30px;
@@ -457,19 +338,9 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .dp-feed-item .meta .s {
-            font-size: 0.7rem;
-            color: var(--text-soft);
-        }
-        .dp-feed-item .time {
-            font-size: 0.68rem;
-            color: var(--text-soft);
-            flex-shrink: 0;
-        }
+        .dp-feed-item .meta .s { font-size: 0.7rem; color: var(--text-soft); }
 
-        /* ==========================================================================
-           STATS BAR
-           ========================================================================== */
+        /* Stats Bar */
         .stats-container {
             display: flex;
             justify-content: center;
@@ -486,76 +357,39 @@
             border: 1px solid var(--border-color);
             min-width: 200px;
             box-shadow: var(--card-shadow);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-        .stat-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }
-        .stat-box:hover {
-            transform: translateY(-6px);
-            border-color: transparent;
-            box-shadow: var(--card-hover-shadow);
-        }
-        .stat-box:hover::before { transform: scaleX(1); }
         .stat-value {
-            font-size: 2.4rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: var(--primary);
             margin-bottom: 4px;
-            letter-spacing: -0.02em;
         }
         .stat-label {
             font-size: 0.78rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.06em;
         }
 
-        /* ==========================================================================
-           RECENT ACTIVITY
-           ========================================================================== */
+        /* Recent Items Grid */
         .recent-section {
             max-width: 1320px;
             margin: 0 auto;
             padding: 0 8% 100px;
             width: 100%;
         }
-        .recent-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .recent-header h2 {
-            font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-            font-weight: 900;
-            letter-spacing: -0.02em;
-            color: var(--text-main);
-            margin-bottom: 8px;
-        }
-        .recent-header p {
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
+        .recent-header { text-align: center; margin-bottom: 32px; }
+        .recent-header h2 { font-size: 2.2rem; font-weight: 900; color: var(--text-main); }
+        .recent-header p { color: var(--text-muted); font-size: 1rem; }
 
         .filter-tabs {
             display: flex;
             justify-content: center;
             gap: 8px;
             margin-bottom: 32px;
-            flex-wrap: wrap;
         }
         .filter-tab {
-            padding: 9px 18px;
+            padding: 8px 18px;
             border-radius: 999px;
             border: 1px solid var(--border-color);
             background: var(--bg-card);
@@ -564,30 +398,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-        }
-        .filter-tab:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-2px);
         }
         .filter-tab.active {
             background: var(--primary);
             color: #fff;
             border-color: var(--primary);
-            box-shadow: 0 6px 14px var(--primary-glow);
-        }
-        .filter-tab .count {
-            background: rgba(255,255,255,0.2);
-            padding: 1px 7px;
-            border-radius: 999px;
-            font-size: 0.7rem;
-        }
-        .filter-tab:not(.active) .count {
-            background: var(--border-soft);
-            color: var(--text-soft);
         }
 
         .cards-grid {
@@ -604,86 +419,29 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 270px;
+            min-height: 250px;
             box-shadow: var(--card-shadow);
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(24px);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                        box-shadow 0.4s ease,
-                        border-color 0.3s ease,
-                        opacity 0.5s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .card.reveal {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%), rgba(79, 70, 229, 0.08), transparent 40%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--card-hover-shadow);
-            border-color: var(--primary);
-        }
-        .card:hover::after { opacity: 1; }
+        .card:hover { transform: translateY(-6px); box-shadow: var(--card-hover-shadow); }
 
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 14px;
-        }
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
         .card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.15rem;
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
         }
         .card-icon.lost { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
         .card-icon.found { background: rgba(22, 163, 74, 0.12); color: var(--success); }
 
         .badge {
-            display: inline-block;
-            font-size: 0.62rem;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 999px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-size: 0.62rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; text-transform: uppercase;
         }
         .badge-found { background-color: rgba(22, 163, 74, 0.14); color: var(--success); }
         .badge-lost { background-color: rgba(239, 68, 68, 0.14); color: var(--danger); }
+        .badge-recovered { background-color: rgba(79, 70, 229, 0.14); color: var(--primary); }
 
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 6px;
-            letter-spacing: -0.01em;
-        }
-        .card-desc {
-            font-size: 0.86rem;
-            color: var(--text-muted);
-            line-height: 1.55;
-            margin-bottom: 18px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .card-desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
         .card-footer {
             border-top: 1px solid var(--border-soft);
             padding-top: 12px;
@@ -693,214 +451,29 @@
             font-size: 0.76rem;
             color: var(--text-soft);
         }
-        .card-footer span { display: inline-flex; align-items: center; gap: 5px; }
 
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-        .empty-state i { font-size: 2.5rem; color: var(--text-soft); margin-bottom: 14px; }
+        /* Section Layouts */
+        .section-container { max-width: 1320px; margin: 0 auto; padding: 60px 8%; width: 100%; }
+        .section-header { text-align: center; margin-bottom: 40px; }
+        .section-header h2 { font-size: 2rem; font-weight: 800; color: var(--text-main); }
+        
+        .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .how-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; }
+        .how-card h3 { font-size: 1.1rem; font-weight: 700; margin-top: 12px; margin-bottom: 8px; }
 
-        /* ==========================================================================
-           FLOATING ACTION BUTTON
-           ========================================================================== */
-        .fab {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            z-index: 90;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .fab-main, .fab-sub {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 18px;
-            border-radius: 999px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.88rem;
-            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-            cursor: pointer;
-        }
-        .fab-main {
-            background: var(--primary);
-            color: #fff;
-        }
-        .fab-main:hover {
-            transform: scale(1.06);
-            box-shadow: 0 14px 36px var(--primary-glow);
-        }
-        .fab-sub {
-            background: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            transform: translateX(120%);
-            opacity: 0;
-        }
-        .fab.open .fab-sub {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        .fab-sub:nth-child(1) { transition-delay: 0.05s; }
-        .fab-sub:nth-child(2) { transition-delay: 0.1s; }
-        .fab-sub:hover { transform: translateX(0) scale(1.04); border-color: var(--primary); color: var(--primary); }
+        .faq-accordion { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; }
+        .faq-item { border-bottom: 1px solid var(--border-soft); padding: 14px 0; }
+        .faq-question { font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; }
+        .faq-answer { display: none; padding-top: 10px; color: var(--text-muted); font-size: 0.9rem; }
+        .faq-item.active .faq-answer { display: block; }
 
-        /* ==========================================================================
-           TOAST NOTIFICATIONS
-           ========================================================================== */
-        .toast-stack {
-            position: fixed;
-            top: 80px;
-            right: 24px;
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 340px;
-        }
-        .toast {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
-            animation: toastIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
-            position: relative;
-        }
-        .toast.out { animation: toastOut 0.4s forwards; }
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateX(120%); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes toastOut {
-            to { opacity: 0; transform: translateX(120%); }
-        }
-        .toast .ico {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 0.95rem;
-        }
-        .toast .ico.found { background: rgba(22, 163, 74, 0.14); color: var(--success); }
-        .toast .ico.lost { background: rgba(239, 68, 68, 0.14); color: var(--danger); }
-        .toast .ico.info { background: rgba(79, 70, 229, 0.14); color: var(--primary); }
-        .toast .body { flex: 1; min-width: 0; }
-        .toast .body .t { font-weight: 700; font-size: 0.85rem; color: var(--text-main); }
-        .toast .body .s { font-size: 0.74rem; color: var(--text-muted); margin-top: 2px; }
-        .toast .progress {
-            position: absolute;
-            bottom: 0; left: 0;
-            height: 3px;
-            background: var(--primary);
-            width: 100%;
-            transform-origin: left;
-            animation: shrink 4.5s linear forwards;
-        }
-        @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+        /* Footer */
+        .site-footer { background-color: var(--footer-bg); color: #fff; padding: 40px 8% 20px; margin-top: auto; }
+        .footer-bottom { text-align: center; font-size: 0.85rem; color: var(--footer-text); margin-top: 20px; }
 
-        /* ==========================================================================
-           FOOTER
-           ========================================================================== */
-        .site-footer {
-            background-color: var(--footer-bg);
-            color: #ffffff;
-            padding: 60px 8% 30px;
-            margin-top: auto;
-        }
-        .footer-main {
-            display: flex;
-            justify-content: space-between;
-            max-width: 1320px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            gap: 40px;
-            padding-bottom: 40px;
-            border-bottom: 1px solid #1e293b;
-        }
-        .footer-left { max-width: 320px; }
-        .footer-logo {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #ffffff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        .footer-logo img {
-            width: 40px; height: 40px;
-            border-radius: 8px;
-            object-fit: contain;
-            background-color: #ffffff;
-            padding: 2px;
-        }
-        .footer-tagline { color: var(--footer-text); font-size: 0.88rem; line-height: 1.6; }
-        .footer-columns { display: flex; gap: 70px; flex-wrap: wrap; }
-        .footer-col h4 { font-size: 0.92rem; font-weight: 700; color: #fff; margin-bottom: 18px; }
-        .footer-col ul { list-style: none; }
-        .footer-col ul li { margin-bottom: 12px; }
-        .footer-col ul li a { color: var(--footer-text); text-decoration: none; font-size: 0.86rem; transition: color 0.2s, padding-left 0.2s; }
-        .footer-col ul li a:hover { color: #fff; padding-left: 5px; }
-        .footer-bottom {
-            max-width: 1320px;
-            margin: 30px auto 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 10px 0;
-        }
-        .copyright-text { font-size: 0.84rem; color: var(--footer-text); text-align: center; }
-        .footer-socials { display: flex; gap: 14px; position: absolute; right: 0; }
-        .footer-socials a {
-            color: var(--footer-text);
-            font-size: 1.05rem;
-            text-decoration: none;
-            width: 38px; height: 38px;
-            border-radius: 50%;
-            background: #1e293b;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.25s ease;
-        }
-        .footer-socials a:hover { color: #fff; background: var(--primary); transform: translateY(-3px); }
-
-        /* ==========================================================================
-           SCROLL REVEAL HELPER
-           ========================================================================== */
-        .reveal-up {
-            opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal-up.in { opacity: 1; transform: translateY(0); }
-
-        /* ==========================================================================
-           RESPONSIVE
-           ========================================================================== */
         @media (max-width: 960px) {
-            .hero { grid-template-columns: 1fr; gap: 40px; padding-top: 40px; }
+            .hero { grid-template-columns: 1fr; }
             .navbar-nav { display: none; }
-            .stats-container { flex-direction: column; gap: 16px; }
-            .footer-columns { gap: 35px; }
-            .footer-bottom { flex-direction: column; gap: 15px; }
-            .footer-socials { position: static; }
-            .toast-stack { left: 16px; right: 16px; max-width: none; }
-            .fab { bottom: 20px; right: 16px; }
         }
     </style>
 </head>
@@ -921,501 +494,343 @@
             <li><a href="pages/SmartSearch.html">Smart Search</a></li>
             <li><a href="#recent">Recent Activity</a></li>
             <li><a href="#how">How It Works</a></li>
+            <li><a href="#help">Help Center</a></li>
         </ul>
 
-        <div class="nav-actions" id="navActions">
-            <button onclick="toggleTheme()" class="btn-theme-toggle" id="themeToggleBtn" title="Toggle Light/Dark Theme">
-                <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
+        <div class="nav-actions">
+            <button class="btn-theme-toggle" id="themeToggle" title="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
             </button>
-            <a href="pages/Login.html" class="btn btn-outline" id="btnLogin">Log In</a>
-            <a href="pages/Register.html" class="btn btn-primary" id="btnSignup">Sign Up</a>
+            <a href="pages/ReportLost.html" class="btn btn-outline"><i class="fa-solid fa-plus"></i> Report Item</a>
         </div>
     </header>
 
-    <!-- ===================== HERO ===================== -->
+    <!-- ===================== HERO SECTION ===================== -->
     <section class="hero">
-        <div class="hero-content">
-            <span class="hero-eyebrow"><span class="pulse-dot"></span> Live campus lost &amp; found network</span>
+        <div class="hero-left">
+            <div class="hero-eyebrow">
+                <span>Official Campus Lost & Found Platform</span>
+            </div>
             <h1 class="hero-title">
-                Lost something?<br>
-                <span class="accent">FindIt</span> helps you<br>
-                <span id="typewriter" class="typewriter-text"></span>
+                Lost something on campus? <br>
+                <span class="accent">We'll help you find it.</span>
             </h1>
             <p class="hero-subtitle">
-                The smart, centralized lost-and-found portal for campus students and staff. Report, track, and recover items in real time across every department block.
+                FindIt bridges the gap between misplaced belongings and their owners. Fast, secure, and dynamically synced with real student reports.
             </p>
             <div class="hero-btns">
-                <a href="pages/ReportLost.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Report Lost Item</a>
-                <a href="pages/ReportFound.html" class="btn btn-outline"><i class="fa-solid fa-hand-holding-heart"></i> Found Something?</a>
+                <a href="pages/SmartSearch.html" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Search Items</a>
+                <a href="pages/ReportItem.html" class="btn btn-outline"><i class="fa-solid fa-bullhorn"></i> Report Lost/Found</a>
             </div>
         </div>
 
-        <!-- Live dashboard preview -->
-        <div class="dashboard-preview">
-            <div class="dp-header">
-                <div class="dp-title"><span class="live-dot"></span> Live Activity</div>
-                <div class="dp-chips">
-                    <span class="dp-chip active">Today</span>
-                    <span class="dp-chip">Week</span>
+        <div class="hero-right">
+            <div class="dashboard-preview">
+                <div class="dp-header">
+                    <div class="dp-title">
+                        <span class="live-dot"></span> Dynamic Campus Feed
+                    </div>
                 </div>
+
+                <!-- DYNAMIC HERO STATS -->
+                <div class="dp-stats">
+                    <div class="dp-stat">
+                        <div class="v" id="heroReturnRate">0%</div>
+                        <div class="l">Return Rate</div>
+                    </div>
+                    <div class="dp-stat">
+                        <div class="v" id="heroAvgSearch">0h</div>
+                        <div class="l">Avg Search</div>
+                    </div>
+                    <div class="dp-stat">
+                        <div class="v" id="heroRecovered">0</div>
+                        <div class="l">Recovered</div>
+                    </div>
+                </div>
+
+                <!-- DYNAMIC LIVE FEED -->
+                <div class="dp-feed" id="liveFeed"></div>
             </div>
-            <div class="dp-stats">
-                <div class="dp-stat"><div class="v" id="dpRecovered">0</div><div class="l">Recovered</div></div>
-                <div class="dp-stat"><div class="v" id="dpActive">0</div><div class="l">Active</div></div>
-                <div class="dp-stat"><div class="v" id="dpMatch">100%</div><div class="l">Match</div></div>
-            </div>
-            <div class="dp-feed" id="dpFeed"></div>
         </div>
     </section>
 
-    <!-- ===================== STATS ===================== -->
+    <!-- ===================== DYNAMIC STATS BAR ===================== -->
     <div class="stats-container">
-        <div class="stat-box reveal-up">
-            <div class="stat-value" id="statRecovered">0</div>
+        <div class="stat-box">
+            <div class="stat-value" id="statTotalItems">0</div>
+            <div class="stat-label">Total Reported</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="statLostCount">0</div>
+            <div class="stat-label">Currently Lost</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="statRecoveredCount">0</div>
             <div class="stat-label">Items Recovered</div>
         </div>
-        <div class="stat-box reveal-up">
-            <div class="stat-value" id="statMatchRate">100%</div>
-            <div class="stat-label">Verified Match</div>
-        </div>
-        <div class="stat-box reveal-up">
-            <div class="stat-value" id="statActive">0</div>
-            <div class="stat-label">Active Reports</div>
+        <div class="stat-box">
+            <div class="stat-value" id="statAvgSearchTime">0h</div>
+            <div class="stat-label">Avg Recovery Time</div>
         </div>
     </div>
 
-    <!-- ===================== RECENT ACTIVITY ===================== -->
+    <!-- ===================== RECENT ACTIVITY (DYNAMIC GRID) ===================== -->
     <section class="recent-section" id="recent">
-        <div class="recent-header reveal-up">
-            <h2>Recent Campus Activity</h2>
-            <p>Live listings of reported lost and found items across department blocks</p>
+        <div class="recent-header">
+            <h2>Recent Activity</h2>
+            <p>Live, user-reported items dynamically synchronized in real time.</p>
         </div>
 
-        <div class="filter-tabs reveal-up" id="filterTabs">
-            <button class="filter-tab active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All <span class="count" id="cntAll">0</span></button>
-            <button class="filter-tab" data-filter="lost"><i class="fa-solid fa-magnifying-glass"></i> Lost <span class="count" id="cntLost">0</span></button>
-            <button class="filter-tab" data-filter="found"><i class="fa-solid fa-box-open"></i> Found <span class="count" id="cntFound">0</span></button>
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterItems('all', this)">All Items (<span id="countAll">0</span>)</button>
+            <button class="filter-tab" onclick="filterItems('lost', this)">Lost (<span id="countLost">0</span>)</button>
+            <button class="filter-tab" onclick="filterItems('found', this)">Found (<span id="countFound">0</span>)</button>
+            <button class="filter-tab" onclick="filterItems('recovered', this)">Recovered (<span id="countRecovered">0</span>)</button>
         </div>
 
-        <div class="cards-grid" id="recentItemsGrid"></div>
+        <!-- Dynamic Container for Cards -->
+        <div class="cards-grid" id="cardsGrid"></div>
     </section>
 
     <!-- ===================== HOW IT WORKS ===================== -->
-    <section class="recent-section" id="how" style="padding-top:0;">
-        <div class="recent-header reveal-up">
-            <h2>How FindIt Works</h2>
-            <p>Three simple steps from lost to recovered</p>
+    <section class="section-container" id="how">
+        <div class="section-header">
+            <h2>How It Works</h2>
         </div>
-        <div class="cards-grid">
-            <div class="card reveal-up" style="cursor:default">
-                <div>
-                    <div class="card-icon lost"><i class="fa-solid fa-bullhorn"></i></div>
-                    <h3 class="card-title">Report</h3>
-                    <p class="card-desc">Lost an item? Post a report with details and last-seen location in under a minute.</p>
-                </div>
-                <div class="card-footer"><span>Step 1</span><span><i class="fa-solid fa-arrow-right"></i></span></div>
+        <div class="how-grid">
+            <div class="how-card">
+                <i class="fa-solid fa-file-pen fa-2x" style="color:var(--primary);"></i>
+                <h3>1. Report</h3>
+                <p>Submit item details, category, and location via the form.</p>
             </div>
-            <div class="card reveal-up" style="cursor:default">
-                <div>
-                    <div class="card-icon found"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
-                    <h3 class="card-title">Match</h3>
-                    <p class="card-desc">Our system pairs lost reports with found listings and notifies you instantly when there's a hit.</p>
-                </div>
-                <div class="card-footer"><span>Step 2</span><span><i class="fa-solid fa-arrow-right"></i></span></div>
+            <div class="how-card">
+                <i class="fa-solid fa-wand-magic-sparkles fa-2x" style="color:var(--primary);"></i>
+                <h3>2. Match</h3>
+                <p>Items are categorized and matched dynamically.</p>
             </div>
-            <div class="card reveal-up" style="cursor:default">
-                <div>
-                    <div class="card-icon" style="background:rgba(79,70,229,0.12);color:var(--primary)"><i class="fa-solid fa-handshake"></i></div>
-                    <h3 class="card-title">Recover</h3>
-                    <p class="card-desc">Connect with the finder, verify ownership, and get your item back — all on campus.</p>
+            <div class="how-card">
+                <i class="fa-solid fa-handshake fa-2x" style="color:var(--primary);"></i>
+                <h3>3. Handover</h3>
+                <p>Owners verify identity and collect items safely.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== HELP CENTER ===================== -->
+    <section class="section-container" id="help">
+        <div class="section-header">
+            <h2>Help Center</h2>
+        </div>
+        <div class="faq-accordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Where do I pick up dynamic found items?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
                 </div>
-                <div class="card-footer"><span>Step 3</span><span><i class="fa-solid fa-check"></i></span></div>
+                <div class="faq-answer">Items are held safely at campus security or designated desks.</div>
             </div>
         </div>
     </section>
 
     <!-- ===================== FOOTER ===================== -->
     <footer class="site-footer">
-        <div class="footer-main">
-            <div class="footer-left">
-                <a href="index.html" class="footer-logo">
-                    <img src="images/findit.jpeg" alt="FindIt Logo">
-                    <span>FindIt</span>
-                </a>
-                <p class="footer-tagline">Simplifying lost and found management across university campuses.</p>
-            </div>
-            <div class="footer-columns">
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="#recent">Recent Activity</a></li>
-                        <li><a href="#how">How It Works</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Account</h4>
-                    <ul>
-                        <li><a href="pages/Login.html">Log In</a></li>
-                        <li><a href="pages/Register.html">Register</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="pages/help-center.html">Help Center</a></li>
-                        <li><a href="pages/privacy-policy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
         <div class="footer-bottom">
-            <p class="copyright-text">&copy; 2026 FindIt Campus System. All rights reserved.</p>
-            <div class="footer-socials">
-                <a href="https://github.com" target="_blank" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-                <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-            </div>
+            &copy; 2026 FindIt Campus Lost & Found System. Fully Dynamic Data Enabled.
         </div>
     </footer>
 
-    <!-- ===================== FLOATING ACTION BUTTON ===================== -->
-    <div class="fab" id="fab">
-        <a href="pages/ReportFound.html" class="fab-sub"><i class="fa-solid fa-hand-holding-heart"></i> Report Found</a>
-        <a href="pages/ReportLost.html" class="fab-sub"><i class="fa-solid fa-magnifying-glass"></i> Report Lost</a>
-        <button class="fab-main" id="fabMain" onclick="document.getElementById('fab').classList.toggle('open')">
-            <i class="fa-solid fa-plus" id="fabIcon"></i> Report
-        </button>
-    </div>
-
-    <!-- ===================== TOAST STACK ===================== -->
-    <div class="toast-stack" id="toastStack"></div>
-
-    <!-- ===================== JS CONTROLLER ===================== -->
+    <!-- ===================== DYNAMIC DATA JAVASCRIPT ===================== -->
     <script>
-        /* ---------- Theme ---------- */
-        function toggleTheme() {
-            const cur = document.documentElement.getAttribute('data-theme');
-            const next = cur === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('findit_theme', next);
-            updateThemeIcon(next);
-        }
-        function updateThemeIcon(theme) {
-            const icon = document.getElementById('themeToggleIcon');
-            if (!icon) return;
-            if (theme === 'dark') { icon.className = 'fa-solid fa-sun'; icon.style.color = '#f59e0b'; }
-            else { icon.className = 'fa-solid fa-moon'; icon.style.color = 'inherit'; }
-        }
-
-        /* ---------- Data layer (localStorage) ---------- */
-        function getItems() {
-            const a = JSON.parse(localStorage.getItem('findit_all_reports') || '[]');
-            const b = JSON.parse(localStorage.getItem('findit_items') || '[]');
-            // Normalize both legacy stores into one shape
-            const merged = [];
-            a.forEach(it => merged.push(normalize(it, 'all_reports')));
-            b.forEach(it => merged.push(normalize(it, 'items')));
-            return merged;
-        }
-        function normalize(it, src) {
-            const type = (it.type || (src === 'items' ? 'LOST' : 'Lost')).toUpperCase();
-            const status = (it.status || '').toUpperCase();
-            return {
-                type,
-                title: it.itemName || it.title || it.name || 'Untitled Item',
-                description: it.description || 'No description provided.',
-                location: it.location || 'Campus',
-                date: it.date || 'Recently',
-                status,
-                category: it.category || '',
-                icon: it.icon || '',
-            };
-        }
-        function resolveIcon(item) {
-            const n = (item.title || '').toLowerCase();
-            const c = (item.category || '').toLowerCase();
-            if (n.includes('key') || c.includes('key')) return 'fa-key';
-            if (n.includes('laptop') || n.includes('hp') || c.includes('electronic')) return 'fa-laptop';
-            if (n.includes('id') || c.includes('id')) return 'fa-id-card';
-            if (n.includes('wallet') || c.includes('personal')) return 'fa-wallet';
-            if (n.includes('phone') || n.includes('mobile')) return 'fa-mobile-screen';
-            if (n.includes('book')) return 'fa-book';
-            if (n.includes('bag') || n.includes('backpack')) return 'fa-bag-shopping';
-            return item.icon || 'fa-box';
-        }
-
-        /* ---------- Stats ---------- */
-        function computeStats(items) {
-            const active = items.filter(i => i.type === 'LOST' && !['CLAIMED','RECOVERED','RESOLVED'].includes(i.status)).length;
-            const recovered = items.filter(i => i.type === 'FOUND' || ['CLAIMED','RECOVERED','RESOLVED'].includes(i.status)).length;
-            const total = active + recovered;
-            const rate = total > 0 ? Math.round((recovered / total) * 100) : 100;
-            return { active, recovered, rate };
-        }
-
-        function animateCount(el, target, suffix) {
-            if (!el) return;
-            const dur = 1100;
-            const start = performance.now();
-            function frame(now) {
-                const p = Math.min((now - start) / dur, 1);
-                const eased = 1 - Math.pow(1 - p, 3);
-                el.textContent = Math.round(eased * target) + (suffix || '');
-                if (p < 1) requestAnimationFrame(frame);
-            }
-            requestAnimationFrame(frame);
-        }
-
-        function renderStats() {
-            const s = computeStats(getItems());
-            animateCount(document.getElementById('statRecovered'), s.recovered);
-            animateCount(document.getElementById('statActive'), s.active);
-            document.getElementById('statMatchRate').textContent = s.rate + '%';
-            // dashboard preview
-            animateCount(document.getElementById('dpRecovered'), s.recovered);
-            animateCount(document.getElementById('dpActive'), s.active);
-            document.getElementById('dpMatch').textContent = s.rate + '%';
-        }
-
-        /* ---------- Dashboard live feed ---------- */
-        const feedPool = [
-            { type: 'FOUND', title: 'Student ID Card', where: 'Library Block', icon: 'fa-id-card' },
-            { type: 'LOST', title: 'Black Wallet', where: 'Cafeteria', icon: 'fa-wallet' },
-            { type: 'FOUND', title: 'HP Laptop Charger', where: 'Lab 3', icon: 'fa-plug' },
-            { type: 'LOST', title: 'Room Keys', where: 'Hostel B', icon: 'fa-key' },
-            { type: 'FOUND', title: 'Water Bottle', where: 'Sports Complex', icon: 'fa-bottle-water' },
-            { type: 'LOST', title: 'Phone (Samsung)', where: 'Auditorium', icon: 'fa-mobile-screen' },
-            { type: 'FOUND', title: 'Notebook', where: 'Lecture Hall 2', icon: 'fa-book' },
-            { type: 'LOST', title: 'Backpack', where: 'Bus Stop', icon: 'fa-bag-shopping' },
+        /* ==========================================================================
+           1. INITIAL SEED DATA (Used only if localStorage has no reports yet)
+           ========================================================================== */
+        const initialSeedData = [
+            { id: "101", title: "AirPods Pro Case", category: "Electronics", status: "found", location: "Student Union", date: "2026-07-26T18:00:00", searchTimeHours: 1.5 },
+            { id: "102", title: "Leather Wallet", category: "Wallets & Cards", status: "lost", location: "Science Building", date: "2026-07-26T17:30:00", searchTimeHours: 0 },
+            { id: "103", title: "Hydro Flask Water Bottle", category: "Personal Belongings", status: "recovered", location: "Main Gym", date: "2026-07-25T12:00:00", searchTimeHours: 3.0 },
+            { id: "104", title: "TI-84 Calculator", category: "Electronics", status: "lost", location: "Math Block 302", date: "2026-07-24T10:15:00", searchTimeHours: 0 },
+            { id: "105", title: "Prescription Glasses", category: "Personal Belongings", status: "found", location: "Campus Library", date: "2026-07-24T09:00:00", searchTimeHours: 2.0 },
+            { id: "106", title: "Student ID Card", category: "Wallets & Cards", status: "recovered", location: "Cafeteria", date: "2026-07-23T14:20:00", searchTimeHours: 0.8 }
         ];
-        function relTime(i) {
-            const m = i === 0 ? 'just now' : `${i}m ago`;
-            return m;
-        }
-        function renderFeed() {
-            const feed = document.getElementById('dpFeed');
-            if (!feed) return;
-            const items = getItems();
-            const list = items.length > 0 ? items.slice(0, 4) : feedPool.slice(0, 4);
-            feed.innerHTML = list.map((it, i) => {
-                const isLost = (it.type || '').toUpperCase() === 'LOST';
-                const icon = it.icon ? it.icon : resolveIcon(it);
-                return `<div class="dp-feed-item">
-                    <div class="ico ${isLost ? 'lost' : 'found'}"><i class="fa-solid ${icon}"></i></div>
-                    <div class="meta">
-                        <div class="t">${it.title}</div>
-                        <div class="s">${it.location || ''}</div>
-                    </div>
-                    <div class="time">${relTime(i)}</div>
-                </div>`;
-            }).join('');
-        }
 
-        /* ---------- Activity grid with filters ---------- */
-        let currentFilter = 'all';
-        function renderGrid() {
-            const grid = document.getElementById('recentItemsGrid');
-            if (!grid) return;
-            let items = getItems();
-            // Seed demo data if empty so the page feels alive
-            if (items.length === 0) {
-                items = [
-                    { type:'LOST', title:'Black Wallet', description:'Leather wallet with student ID inside. Lost near cafeteria.', location:'Cafeteria', date:'2h ago', icon:'fa-wallet' },
-                    { type:'FOUND', title:'Student ID Card', description:'Found on library second floor. Name visible on card.', location:'Library Block', date:'5h ago', icon:'fa-id-card' },
-                    { type:'LOST', title:'HP Laptop Charger', description:'Black HP charger left in Lab 3 during evening class.', location:'Lab 3', date:'1d ago', icon:'fa-plug' },
-                    { type:'FOUND', title:'Room Keys', description:'Set of keys with red keychain found at Hostel B entrance.', location:'Hostel B', date:'1d ago', icon:'fa-key' },
-                    { type:'LOST', title:'Phone (Samsung)', description:'Samsung Galaxy in blue case. Lost after auditorium event.', location:'Auditorium', date:'2d ago', icon:'fa-mobile-screen' },
-                    { type:'FOUND', title:'Water Bottle', description:'Steel water bottle found at sports complex bench.', location:'Sports Complex', date:'3d ago', icon:'fa-bottle-water' },
-                ];
+        // Retrieve items from LocalStorage or initialize
+        function getItemsFromStorage() {
+            let items = localStorage.getItem('findit_items');
+            if (!items) {
+                localStorage.setItem('findit_items', JSON.stringify(initialSeedData));
+                return initialSeedData;
             }
-            const counts = { all: items.length, lost: 0, found: 0 };
-            items.forEach(i => { if (i.type === 'LOST') counts.lost++; else counts.found++; });
-            document.getElementById('cntAll').textContent = counts.all;
-            document.getElementById('cntLost').textContent = counts.lost;
-            document.getElementById('cntFound').textContent = counts.found;
+            return JSON.parse(items);
+        }
 
-            const filtered = currentFilter === 'all' ? items : items.filter(i => i.type === currentFilter.toUpperCase());
+        /* ==========================================================================
+           2. DYNAMIC ICON GENERATOR (Based on Item Category or Title)
+           ========================================================================== */
+        function getDynamicIcon(title, category) {
+            const text = (title + " " + category).toLowerCase();
+            if (text.includes("airpod") || text.includes("headphone") || text.includes("audio")) return "fa-headphones";
+            if (text.includes("phone") || text.includes("mobile")) return "fa-mobile-screen";
+            if (text.includes("laptop") || text.includes("macbook") || text.includes("charger")) return "fa-laptop";
+            if (text.includes("wallet") || text.includes("purse")) return "fa-wallet";
+            if (text.includes("card") || text.includes("id")) return "fa-id-card";
+            if (text.includes("key")) return "fa-key";
+            if (text.includes("bottle") || text.includes("flask")) return "fa-bottle-water";
+            if (text.includes("glass")) return "fa-glasses";
+            if (text.includes("calc") || text.includes("math")) return "fa-calculator";
+            if (text.includes("book") || text.includes("notebook")) return "fa-book";
+            if (text.includes("bag") || text.includes("backpack")) return "fa-bag-shopping";
+            return "fa-box-open"; // Default fallback icon
+        }
+
+        /* ==========================================================================
+           3. DYNAMIC STATS CALCULATOR
+           ========================================================================== */
+        function renderDynamicDashboard() {
+            const items = getItemsFromStorage();
+
+            const totalCount = items.length;
+            const lostItems = items.filter(i => i.status === 'lost');
+            const foundItems = items.filter(i => i.status === 'found');
+            const recoveredItems = items.filter(i => i.status === 'recovered');
+
+            // Calculate Return Rate: (Recovered / (Lost + Found + Recovered)) * 100
+            const returnRate = totalCount > 0 ? Math.round((recoveredItems.length / totalCount) * 100) : 0;
+
+            // Calculate Average Search Time for recovered/found items
+            const timedItems = items.filter(i => i.searchTimeHours && i.searchTimeHours > 0);
+            const avgSearchTimeHours = timedItems.length > 0 
+                ? (timedItems.reduce((acc, i) => acc + Number(i.searchTimeHours), 0) / timedItems.length).toFixed(1)
+                : "1.5";
+
+            // Update DOM Numbers Dynamically
+            document.getElementById('statTotalItems').innerText = totalCount;
+            document.getElementById('statLostCount').innerText = lostItems.length;
+            document.getElementById('statRecoveredCount').innerText = recoveredItems.length;
+            document.getElementById('statAvgSearchTime').innerText = avgSearchTimeHours + "h";
+
+            // Update Filter Tab Badge Counters
+            document.getElementById('countAll').innerText = totalCount;
+            document.getElementById('countLost').innerText = lostItems.length;
+            document.getElementById('countFound').innerText = foundItems.length;
+            document.getElementById('countRecovered').innerText = recoveredItems.length;
+
+            // Update Hero Floating Stats
+            document.getElementById('heroReturnRate').innerText = returnRate + "%";
+            document.getElementById('heroAvgSearch').innerText = "<" + avgSearchTimeHours + "h";
+            document.getElementById('heroRecovered').innerText = recoveredItems.length;
+
+            // Render Feed & Cards Grid
+            renderLiveFeed(items);
+            renderCardsGrid(items, 'all');
+        }
+
+        /* ==========================================================================
+           4. DYNAMIC FEED RENDERER
+           ========================================================================== */
+        function renderLiveFeed(items) {
+            const feedContainer = document.getElementById('liveFeed');
+            feedContainer.innerHTML = '';
+
+            // Display latest 3 items
+            const recent = [...items].reverse().slice(0, 3);
+            recent.forEach(item => {
+                const icon = getDynamicIcon(item.title, item.category);
+                const statusClass = item.status === 'lost' ? 'lost' : 'found';
+                
+                const feedHTML = `
+                    <div class="dp-feed-item">
+                        <div class="ico ${statusClass}"><i class="fa-solid ${icon}"></i></div>
+                        <div class="meta">
+                            <div class="t">${item.title}</div>
+                            <div class="s">${item.status.toUpperCase()} • ${item.location}</div>
+                        </div>
+                        <div class="time">${formatTimeAgo(item.date)}</div>
+                    </div>
+                `;
+                feedContainer.insertAdjacentHTML('beforeend', feedHTML);
+            });
+        }
+
+        /* ==========================================================================
+           5. DYNAMIC CARDS GRID RENDERER
+           ========================================================================== */
+        function renderCardsGrid(items, filterCategory) {
+            const gridContainer = document.getElementById('cardsGrid');
+            gridContainer.innerHTML = '';
+
+            const filtered = items.filter(item => filterCategory === 'all' || item.status === filterCategory);
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No ${currentFilter} items reported yet.</p></div>`;
+                gridContainer.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--text-muted);">No reports found under this category.</div>`;
                 return;
             }
 
-            grid.innerHTML = filtered.slice(0, 8).map(item => {
-                const isLost = item.type === 'LOST';
-                const icon = item.icon ? item.icon : resolveIcon(item);
-                return `
-                    <div class="card">
-                        <div>
-                            <div class="card-top">
-                                <div class="card-icon ${isLost ? 'lost' : 'found'}"><i class="fa-solid ${icon}"></i></div>
-                                <span class="badge ${isLost ? 'badge-lost' : 'badge-found'}">${item.type}</span>
+            filtered.forEach(item => {
+                const icon = getDynamicIcon(item.title, item.category);
+                let badgeClass = "badge-lost";
+                if(item.status === 'found') badgeClass = "badge-found";
+                if(item.status === 'recovered') badgeClass = "badge-recovered";
+
+                const cardHTML = `
+                    <div class="card" data-type="${item.status}">
+                        <div class="card-top">
+                            <div class="card-icon ${item.status === 'lost' ? 'lost' : 'found'}">
+                                <i class="fa-solid ${icon}"></i>
                             </div>
+                            <span class="badge ${badgeClass}">${item.status}</span>
+                        </div>
+                        <div>
                             <h3 class="card-title">${item.title}</h3>
-                            <p class="card-desc">${item.description}</p>
+                            <p class="card-desc">Category: ${item.category}. Reported on campus ground.</p>
                         </div>
                         <div class="card-footer">
                             <span><i class="fa-solid fa-location-dot"></i> ${item.location}</span>
-                            <span><i class="fa-regular fa-clock"></i> ${item.date}</span>
+                            <span><i class="fa-regular fa-clock"></i> ${formatTimeAgo(item.date)}</span>
                         </div>
                     </div>
                 `;
-            }).join('');
-
-            // Re-observe newly created cards
-            document.querySelectorAll('.card:not(.reveal)').forEach(el => cardObserver.observe(el));
-            // Attach pointer-tracking for hover glow
-            document.querySelectorAll('.card').forEach(el => {
-                el.addEventListener('mousemove', e => {
-                    const r = el.getBoundingClientRect();
-                    el.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
-                    el.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
-                });
+                gridContainer.insertAdjacentHTML('beforeend', cardHTML);
             });
         }
 
-        /* ---------- Filter tab wiring ---------- */
-        function wireFilters() {
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    currentFilter = tab.dataset.filter;
-                    renderGrid();
-                });
-            });
+        /* Helper: Relative Time Formatter */
+        function formatTimeAgo(dateString) {
+            if(!dateString) return "Recently";
+            const diffMs = new Date() - new Date(dateString);
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffMins < 60) return `${diffMins <= 0 ? 1 : diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            return `${diffDays}d ago`;
         }
 
-        /* ---------- Scroll reveal ---------- */
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    e.target.classList.add('in');
-                    revealObserver.unobserve(e.target);
-                }
-            });
-        }, { threshold: 0.15 });
-        const cardObserver = new IntersectionObserver((entries) => {
-            entries.forEach((e, idx) => {
-                if (e.isIntersecting) {
-                    setTimeout(() => e.target.classList.add('reveal'), idx * 70);
-                    cardObserver.unobserve(e.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        /* ---------- Toasts ---------- */
-        const toastMessages = [
-            { type:'found', icon:'fa-box-open', title:'New item found', sub:'Student ID Card • Library Block' },
-            { type:'lost', icon:'fa-magnifying-glass', title:'New lost report', sub:'Black Wallet • Cafeteria' },
-            { type:'info', icon:'fa-handshake', title:'Item matched!', sub:'HP Charger reunited with owner' },
-            { type:'found', icon:'fa-key', title:'Keys reported found', sub:'Room Keys • Hostel B' },
-        ];
-        let toastIndex = 0;
-        function showToast(msg) {
-            const stack = document.getElementById('toastStack');
-            const m = msg || toastMessages[toastIndex % toastMessages.length];
-            toastIndex++;
-            const el = document.createElement('div');
-            el.className = 'toast';
-            el.innerHTML = `
-                <div class="ico ${m.type}"><i class="fa-solid ${m.icon}"></i></div>
-                <div class="body"><div class="t">${m.title}</div><div class="s">${m.sub}</div></div>
-                <div class="progress"></div>
-            `;
-            stack.appendChild(el);
-            setTimeout(() => {
-                el.classList.add('out');
-                setTimeout(() => el.remove(), 400);
-            }, 4500);
+        /* Filtering Handler */
+        function filterItems(category, el) {
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            el.classList.add('active');
+            renderCardsGrid(getItemsFromStorage(), category);
         }
 
-        /* ---------- Button ripple ---------- */
-        function wireRipples() {
-            document.querySelectorAll('.btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    const r = document.createElement('span');
-                    r.className = 'ripple';
-                    const d = Math.max(btn.offsetWidth, btn.offsetHeight);
-                    r.style.width = r.style.height = d + 'px';
-                    const rect = btn.getBoundingClientRect();
-                    r.style.left = (e.clientX - rect.left - d/2) + 'px';
-                    r.style.top = (e.clientY - rect.top - d/2) + 'px';
-                    btn.appendChild(r);
-                    setTimeout(() => r.remove(), 600);
-                });
-            });
+        /* Dark / Light Toggle */
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            themeToggle.querySelector('i').className = target === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        });
+
+        /* Accordion Toggle */
+        function toggleFaq(el) {
+            el.parentElement.classList.toggle('active');
         }
 
-        /* ---------- Session / navbar ---------- */
-        function checkUserSession() {
-            const u = JSON.parse(localStorage.getItem('findit_logged_user') || localStorage.getItem('loggedInUser') || 'null');
-            const nav = document.getElementById('navActions');
-            if (u && nav) {
-                const name = u.fullname || u.name || u.username || u.email || 'User';
-                const role = (u.role || 'Student').toUpperCase();
-                nav.innerHTML = `
-                    <button onclick="toggleTheme()" class="btn-theme-toggle" title="Toggle theme">
-                        <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
-                    </button>
-                    <div style="display:flex;align-items:center;gap:10px;font-weight:700;color:var(--primary);font-size:0.9rem;">
-                        <i class="fa-solid fa-circle-user" style="font-size:1.3rem;"></i>
-                        <span>${name} <small style="color:var(--text-muted);font-weight:500;">(${role})</small></span>
-                    </div>
-                    <button onclick="handleLogout()" class="btn btn-outline" style="padding:8px 14px;font-size:0.85rem;">
-                        <i class="fa-solid fa-right-from-bracket"></i> Logout
-                    </button>
-                `;
-                updateThemeIcon(localStorage.getItem('findit_theme') || 'light');
-                wireRipples();
-            }
-        }
-        function handleLogout() {
-            localStorage.removeItem('findit_logged_user');
-            localStorage.removeItem('loggedInUser');
-            window.location.reload();
-        }
-
-        /* ---------- Typewriter ---------- */
-        const phrases = ['FindIt Fast.', 'Recover Items.', 'Connect Campus.'];
-        let pIdx = 0, cIdx = 0, deleting = false;
-        function type() {
-            const el = document.getElementById('typewriter');
-            if (!el) return;
-            const cur = phrases[pIdx];
-            if (deleting) { el.textContent = cur.substring(0, cIdx - 1); cIdx--; }
-            else { el.textContent = cur.substring(0, cIdx + 1); cIdx++; }
-            let speed = deleting ? 45 : 95;
-            if (!deleting && cIdx === cur.length) { speed = 2000; deleting = true; }
-            else if (deleting && cIdx === 0) { deleting = false; pIdx = (pIdx + 1) % phrases.length; speed = 450; }
-            setTimeout(type, speed);
-        }
-
-        /* ---------- Init ---------- */
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('findit_theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-
-            checkUserSession();
-            renderStats();
-            renderGrid();
-            renderFeed();
-            wireFilters();
-            wireRipples();
-            type();
-
-            document.querySelectorAll('.reveal-up').forEach(el => revealObserver.observe(el));
-            document.querySelectorAll('.card').forEach(el => cardObserver.observe(el));
-
-            // Toasts disabled
-
-            // Periodically refresh the feed (rotates rel-times)
-            setInterval(renderFeed, 5000);
+        /* Initial Execution */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderDynamicDashboard();
         });
     </script>
-
-    <script src="js/app.js"></script>
 </body>
 </html>

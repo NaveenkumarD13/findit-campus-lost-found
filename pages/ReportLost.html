@@ -315,10 +315,15 @@
     function handleLostFormSubmit(e) {
         e.preventDefault();
         const activeUser = JSON.parse(localStorage.getItem('findit_logged_user'));
-        if (!activeUser) { showToast('error', 'Session Expired', 'Please log in first.'); setTimeout(() => window.location.href = 'Login.html', 1200); return; }
+        if (!activeUser) { 
+            showToast('error', 'Session Expired', 'Please log in first.'); 
+            setTimeout(() => window.location.href = 'Login.html', 1200); 
+            return; 
+        }
 
         const btn = document.getElementById('btnSubmit');
-        btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Publishing...';
+        btn.disabled = true; 
+        btn.innerHTML = '<span class="spinner"></span> Sending to Admin Dashboard...';
 
         const itemName = document.getElementById('itemName').value;
         const icon = resolveIcon(itemName, document.getElementById('category').value);
@@ -342,13 +347,42 @@
             createdAt: Date.now()
         };
 
+        // 1. Save to main system reports
         const reports = JSON.parse(localStorage.getItem('findit_all_reports') || '[]');
         reports.unshift(newReport);
         localStorage.setItem('findit_all_reports', JSON.stringify(reports));
 
+        // 2. Sync directly to Admin Dashboard database key
+        const adminReports = JSON.parse(localStorage.getItem('findit_admin_reports') || '[]');
+        adminReports.unshift(newReport);
+        localStorage.setItem('findit_admin_reports', JSON.stringify(adminReports));
+
+        // 3. Queue dynamic Toast notification for Admin Dashboard
+        const adminNotifications = JSON.parse(localStorage.getItem('findit_admin_notifications') || '[]');
+        adminNotifications.push({
+            id: newReport.id,
+            title: 'New Lost Item Reported!',
+            message: `${newReport.itemName} reported by ${newReport.ownerName}`,
+            timestamp: newReport.createdAt,
+            type: 'Lost'
+        });
+        localStorage.setItem('findit_admin_notifications', JSON.stringify(adminNotifications));
+
+        // 4. Trigger Realtime Broadcast Channel for active open Admin tabs
+        try {
+            const channel = new BroadcastChannel('findit_realtime_channel');
+            channel.postMessage({
+                event: 'NEW_REPORT_SUBMITTED',
+                data: newReport
+            });
+        } catch (err) {
+            console.log('BroadcastChannel fallback:', err);
+        }
+
+        // Inform user & redirect
         setTimeout(() => {
-            showToast('success', 'Report Published', 'Your lost item report is now live!');
-            setTimeout(() => window.location.href = '../index.html', 1000);
+            showToast('success', 'Sent to Admin Dashboard!', 'Your lost item report was submitted and notified to admins.');
+            setTimeout(() => window.location.href = '../index.html', 1200);
         }, 800);
     }
     </script>
