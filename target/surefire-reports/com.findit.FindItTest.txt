@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.findit.FindItTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.64 s -- in com.findit.FindItTest
