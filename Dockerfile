@@ -1,9 +1,13 @@
+
 FROM node:20-alpine AS build
 
 WORKDIR /app
 
+# Update npm to try to resolve the dependency-tree error
+RUN npm install -g npm@11.6.0
+
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 RUN npm run build

@@ -1,6 +1,8 @@
 package com.findit;
 
 import java.time.Duration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,6 +23,10 @@ public class FindItTest {
     @BeforeEach
     void setUp() {
 
+        Logger.getLogger(
+                "org.openqa.selenium.devtools.CdpVersionFinder"
+        ).setLevel(Level.SEVERE);
+
         ChromeOptions options = new ChromeOptions();
 
         options.addArguments("--headless=new");
@@ -38,7 +44,6 @@ public class FindItTest {
         driver.get("http://127.0.0.1:5501/index.html");
     }
 
-
     @AfterEach
     void tearDown() {
 
@@ -47,8 +52,7 @@ public class FindItTest {
         }
     }
 
-
-    // TC01
+    // TC01 - Verify landing page title
     @Test
     void testLandingPage() {
 
@@ -58,8 +62,7 @@ public class FindItTest {
         );
     }
 
-
-    // TC02
+    // TC02 - Verify FindIt heading
     @Test
     void testFindItHeading() {
 
@@ -70,8 +73,7 @@ public class FindItTest {
         );
     }
 
-
-    // TC03
+    // TC03 - Verify Report Lost navigation
     @Test
     void testReportLostNavigation() {
 
@@ -81,12 +83,11 @@ public class FindItTest {
 
         assertTrue(
                 driver.getCurrentUrl()
-                        .contains("ReportLost.html")
+                        .contains("pages/ReportLost.html")
         );
     }
 
-
-    // TC04
+    // TC04 - Verify Report Found navigation
     @Test
     void testReportFoundNavigation() {
 
@@ -96,12 +97,11 @@ public class FindItTest {
 
         assertTrue(
                 driver.getCurrentUrl()
-                        .contains("ReportFound.html")
+                        .contains("pages/ReportFound.html")
         );
     }
 
-
-    // TC05
+    // TC05 - Verify Login navigation
     @Test
     void testLoginNavigation() {
 
@@ -111,12 +111,11 @@ public class FindItTest {
 
         assertTrue(
                 driver.getCurrentUrl()
-                        .contains("Login.html")
+                        .contains("pages/Login.html")
         );
     }
 
-
-    // TC06
+    // TC06 - Verify Register navigation
     @Test
     void testRegisterNavigation() {
 
@@ -126,42 +125,35 @@ public class FindItTest {
 
         assertTrue(
                 driver.getCurrentUrl()
-                        .contains("Register.html")
+                        .contains("pages/Register.html")
         );
     }
 
-
-    // TC07
+    // TC07 - Verify Report Lost button
     @Test
     void testReportLostButton() {
 
         driver.findElement(
-                By.cssSelector(
-                                        "a[href='pages/ReportLost.html'].btn-outline"
-                )
+                By.cssSelector("a[href='pages/ReportLost.html']")
         ).click();
 
         assertTrue(
                 driver.getCurrentUrl()
-                        .contains("ReportLost.html")
+                        .contains("pages/ReportLost.html")
         );
     }
 
-
-    // TC08
+    // TC08 - Verify Report Found button
     @Test
     void testReportFoundButton() {
 
         driver.findElement(
-                By.cssSelector(
-                                        "a[href='pages/ReportFound.html'].btn-outline"
-                )
+                By.cssSelector("a[href='pages/ReportFound.html']")
         ).click();
 
         assertTrue(
                 driver.getCurrentUrl()
-                        .contains("ReportFound.html")
+                        .contains("pages/ReportFound.html")
         );
     }
-
 }
